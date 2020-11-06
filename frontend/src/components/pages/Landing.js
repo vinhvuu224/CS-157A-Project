@@ -3,10 +3,10 @@ import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
+import Register from '../auth/Register';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
 		flexGrow: 1,
 		padding: theme.spacing(3),
 	},
@@ -45,7 +45,7 @@ const Landing = () => {
 						<Box className={classes.box}>Do more with our Task Management Application</Box>
 					</Grid>
 					<Grid item xs={5}>
-						Register would go here
+						<Register/>
 					</Grid>
 				</Grid>
 				<br />
