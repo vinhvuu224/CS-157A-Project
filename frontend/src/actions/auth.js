@@ -25,10 +25,12 @@ export const register = async (
 	});
 
 	try {
-		const res = await axios.post('/signup', body, config);
-		setAuthHeader(res.data.token);
-		setUser(res.data.token);
-		history.push('/Home');
+		// const res = await axios.post('http://localhost:8080/', body, config);
+		// setAuthHeader(res.data.token);
+		// setUser(res.data.token);
+		// history.push('/Home');
+		axios.post('http://localhost:8080/', body, config)
+		.then(res => console.log(res.data))
 	} catch (err) {
 		console.log(err);
 		return err.response.data;
