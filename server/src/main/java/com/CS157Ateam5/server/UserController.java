@@ -28,14 +28,12 @@ public class UserController {
 	 public @ResponseBody String addNewEntry(@RequestBody Users user) {
 		 	int count = 24;
 		 	List<String> usernameList = new ArrayList<>();
-			usernameList.addAll(jdbcTemplate.queryForList("SELECT firstname FROM users WHERE users.email = '"+user.getEmail()+"' OR users.username = '"+user.getUsername()+"';", String.class));
+			usernameList.addAll(jdbcTemplate.queryForList("SELECT * FROM users WHERE users.email = '"+user.getEmail()+"' OR users.username = '"+user.getUsername()+"';", String.class));
 		    if(usernameList.size()>0) {
 		    	return "duplicate";
 		    }
 		    else {
-		    	jdbcTemplate.update("INSERT INTO users(user_id,firstname,lastname,email,password,username) values("+count+",'joe','biden','"+user.getEmail()+"','"+user.getPassword()+"','"+user.getUsername()+"')");
-
-		    	count ++;
+		    	jdbcTemplate.update("INSERT INTO users(email,password,username) values('" + user.getEmail()+"','"+user.getPassword()+"','"+user.getUsername()+"')");
 		    }
 		    return "SUCCESS!";
 		}
