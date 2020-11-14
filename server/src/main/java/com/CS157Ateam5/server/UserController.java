@@ -53,7 +53,7 @@ public class UserController {
 		    }
 		    else if(user.getPassword().equals(user.getConfirmPassword()) == false){
 		    	//myObj.setConfirmPasswordError("Password does not match.");
-		    	return "Password does not match. " + user.getPassword() + " this does not equal to: " + user.getConfirmPassword();
+		    	return "Password does not match.";
 		    }
 		   else {
 			    JWTUtil jwt = new JWTUtil();
