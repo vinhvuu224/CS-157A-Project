@@ -19,12 +19,28 @@ export const register = async (
     password,
     confirmPassword,
   });
-
+  let data = {
+    email: null,
+    username: null,
+    password: null,
+    confirmPassword: null,
+  };
   try {
     const res = await axios.post('http://localhost:8080/', body, config);
-    //setAuthHeader(res.data.token);
-    //setUser(res.data.token);
-    history.push('/Home');
+    if (res.data === 'Duplicate username.') {
+      data.username = res.data;
+      return data;
+    } else if (res.data === 'Duplicate email.') {
+      data.email = res.data;
+      return data;
+    } else if (res.data === 'Password does not match.') {
+      data.confirmPassword = res.data;
+      return data;
+    } else {
+      setAuthHeader(res.data);
+      setUser(res.data);
+      history.push('/Home');
+    }
   } catch (err) {
     console.log(err);
     return err.response.data;
