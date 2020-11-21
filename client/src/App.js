@@ -9,7 +9,7 @@ import AuthenticatedRoute from './components/routes/AuthenticatedRoute';
 import RedirectOnceLoggedIn from './components/routes/RedirectOnceLoggedIn';
 import Home from './components/pages/Home';
 import Header from './components/Header';
-import Workspace from './components/pages/Workspace';
+import Storyboard from './components/pages/Storyboard';
 const App = () => {
   const [user, setUser] = useState(null);
 
@@ -22,7 +22,7 @@ const App = () => {
           <Switch>
             <RedirectOnceLoggedIn exact path='/' component={Landing} />
             <Route exact path='/Home' component={Home} />
-            <Route exact path='/Workspace' component={Workspace} />
+            <Route exact path='/Storyboard' component={Storyboard} />
             <RedirectOnceLoggedIn exact path='/register' component={Register} />
             <RedirectOnceLoggedIn exact path='/login' component={Login} />
           </Switch>
