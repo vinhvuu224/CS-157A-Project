@@ -1,9 +1,9 @@
 .container {
-	min-height: 100vh;
-	background: -webkit-linear-gradient(
-		to right,
-		#fe6b8b 30%,
-		#ff8e53 90%
-	); /* Chrome 10-25, Safari 5.1-6 */
-	background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
+  min-height: 100vh;
+  background: -webkit-linear-gradient(
+    to right,
+    #fe6b8b 30%,
+    #ff8e53 90%
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
 }
