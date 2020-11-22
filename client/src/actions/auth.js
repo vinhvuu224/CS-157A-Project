@@ -49,7 +49,7 @@ export const register = async (
 
 // Login User
 export const login = async (emailUsername, password, history, setUser) => {
-  const email = emailUsername;
+  const email = usernameEmail;
   const body = JSON.stringify({
     email,
     password,
