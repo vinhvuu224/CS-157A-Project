@@ -26,7 +26,7 @@ export const register = async (
     confirmPassword: null,
   };
   try {
-    const res = await axios.post('http://localhost:8080/', body, config);
+    const res = await axios.post('/signup', body, config);
     if (res.data === 'Duplicate username.') {
       data.username = res.data;
       return data;
@@ -49,37 +49,38 @@ export const register = async (
 
 // Login User
 export const login = async (emailUsername, password, history, setUser) => {
-  const email = emailUsername;
+  let data = {
+    emailUsernameError: null,
+    passwordError: null,
+  };
   const body = JSON.stringify({
-    email,
+    emailUsername,
     password,
   });
   try {
     const res = await axios.post('/login', body, config);
-    setAuthHeader(res.data.token);
-    setUser(res.data.token);
-    history.push('/Home');
+    if (res.data === 'Please enter a valid username/email.') {
+      data.emailUsernameError = res.data;
+      return data;
+    } else if (res.data === 'Incorrect password.') {
+      data.passwordError = res.data;
+      return data;
+    } else {
+      setAuthHeader(res.data);
+      setUser(res.data);
+      history.push('/Home');
+    }
   } catch (err) {
     return err.response.data;
   }
 };
 
 export const logout = (history, setUser) => async () => {
-  console.log('errors?');
   setUser(null);
   localStorage.removeItem('token');
   delete axios.defaults.headers.common['Authorization'];
   history.push('/');
 };
-
-// export const getUserData = () => async () => {
-// 	try {
-// 		const res = await axios.get('/user');
-// 		return res.data;
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// };
 
 const setAuthHeader = (token) => {
   const Token = `${token}`;

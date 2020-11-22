@@ -38,7 +38,7 @@ const Landing = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Grid direction='column'>
+      <Grid container spacing={2} direction='column'>
         <Grid item xs={12} container>
           <Grid item xs={3} />
           <Grid item xs={4}>
