@@ -29,11 +29,11 @@ const Task = (props) => {
           <Typography variant='body2' color='textSecondary' component='p'>
             {props.task.description}
           </Typography>
-          <IconButton aria-label='Add' color='secondary'>
-            <DeleteIcon />
-          </IconButton>
           <IconButton aria-label='Edit' color='primary'>
             <CreateIcon />
+          </IconButton>
+          <IconButton aria-label='Add' color='secondary'>
+            <DeleteIcon />
           </IconButton>
         </Container>
       )}

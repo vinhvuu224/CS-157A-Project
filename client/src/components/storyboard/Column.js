@@ -6,10 +6,10 @@ import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 
 const Container = styled.div`
-  margin: 8px;
+  margin: 1%;
   border: 1px solid lightgrey;
   border-radius: 2px;
-  width: 450px;
+  width: 40%;
   overflow: auto;
   height: 500px;
 `;
@@ -32,7 +32,6 @@ const Column = (props) => {
           <AddIcon />
         </IconButton>
       </Title>
-
       <Droppable droppableId={props.column.id}>
         {(provided, snapshot) => (
           <TaskList
