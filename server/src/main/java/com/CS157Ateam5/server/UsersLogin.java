@@ -2,20 +2,20 @@ package com.CS157Ateam5.server;
 
 public class UsersLogin {
 
-    private String usernameEmail, password;
+    private String emailUsername, password;
 
-    public UsersLogin(String usernameEmail, String password) {
+    public UsersLogin(String emailUsername, String password) {
 
-        this.usernameEmail = usernameEmail;
+        this.emailUsername = emailUsername;
         this.password = password;
     }
 
 	public String getUsernameEmail() {
-		return usernameEmail;
+		return emailUsername;
 	}
 
 	public void setUsername(String username) {
-		this.usernameEmail = username;
+		this.emailUsername = username;
 	}
 
 
@@ -31,6 +31,6 @@ public class UsersLogin {
     public String toString() {
         return String.format(
                 "User[id=%d, username='%s', email='%s']",
-                usernameEmail, password);
+                emailUsername, password);
     }
 }

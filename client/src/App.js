@@ -17,12 +17,16 @@ const App = () => {
   return (
     <Router>
       <UserContext.Provider value={User}>
+        <Header />
         <div className='container'>
-          <Header />
           <Switch>
             <RedirectOnceLoggedIn exact path='/' component={Landing} />
-            <Route exact path='/Home' component={Home} />
-            <Route exact path='/Storyboard' component={Storyboard} />
+            <AuthenticatedRoute exact path='/Home' component={Home} />
+            <AuthenticatedRoute
+              exact
+              path='/Storyboard'
+              component={Storyboard}
+            />
             <RedirectOnceLoggedIn exact path='/register' component={Register} />
             <RedirectOnceLoggedIn exact path='/login' component={Login} />
           </Switch>

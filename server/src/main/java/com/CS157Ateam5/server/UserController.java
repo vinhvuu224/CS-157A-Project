@@ -25,14 +25,14 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:8080")
 public class UserController {
 	
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	 
-	 @CrossOrigin
-	 @PostMapping(value="/")
+	 @CrossOrigin(origins = "http://localhost:8080")
+	 @PostMapping(value="/signup")
 	 public @ResponseBody String addNewEntry(@RequestBody Users user) {
 		 	//RegistErrorChecker myObj = new RegistErrorChecker("","","");
 		 	List<String> usernameList = new ArrayList<>();
@@ -67,7 +67,7 @@ public class UserController {
 		    }
 		}
 	 
-	 
+	 	@CrossOrigin(origins = "http://localhost:8080")
 	 	@PostMapping("/login")
 	 	public String login(@RequestBody UsersLogin userLogin) {
 		    JWTUtil jwt = new JWTUtil();
