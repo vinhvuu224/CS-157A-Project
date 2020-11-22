@@ -25,7 +25,7 @@ const Home = () => {
   let history = useHistory();
   const projects = [{ name: 'etst' }, { name: '12312' }, { name: 'owifjwei' }];
   function nextPage(e) {
-    history.push({ pathname: '/Workspace', projectName: e });
+    history.push({ pathname: '/Storyboard', projectName: e });
   }
   return (
     <div className={classes.root}>
