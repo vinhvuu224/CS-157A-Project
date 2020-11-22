@@ -8,25 +8,28 @@ import Login from './components/auth/Login';
 import AuthenticatedRoute from './components/routes/AuthenticatedRoute';
 import RedirectOnceLoggedIn from './components/routes/RedirectOnceLoggedIn';
 import Home from './components/pages/Home';
-
+import Header from './components/Header';
+import Storyboard from './components/pages/Storyboard';
 const App = () => {
-	const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-	const User = useMemo(() => ({ user, setUser }), [user, setUser]);
+  const User = useMemo(() => ({ user, setUser }), [user, setUser]);
   return (
-		<Router>
-			<UserContext.Provider value={User}>
-				<div className = 'container'>
-					<Switch>
-						<RedirectOnceLoggedIn exact path='/' component={Landing} />
-						<AuthenticatedRoute exact path='/Home' component={Home} />
-						<RedirectOnceLoggedIn exact path='/register' component={Register} />
-						<RedirectOnceLoggedIn exact path='/login' component={Login} />
-					</Switch>
-				</div>			
-			</UserContext.Provider>
-		</Router>
+    <Router>
+      <UserContext.Provider value={User}>
+        <div className='container'>
+          <Header />
+          <Switch>
+            <RedirectOnceLoggedIn exact path='/' component={Landing} />
+            <Route exact path='/Home' component={Home} />
+            <Route exact path='/Storyboard' component={Storyboard} />
+            <RedirectOnceLoggedIn exact path='/register' component={Register} />
+            <RedirectOnceLoggedIn exact path='/login' component={Login} />
+          </Switch>
+        </div>
+      </UserContext.Provider>
+    </Router>
   );
-}
+};
 
 export default App;
