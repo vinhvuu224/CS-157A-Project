@@ -15,7 +15,7 @@ public class TaskController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @CrossOrigin
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(value="/tasks")
     public @ResponseBody List<Long> getUserIds(@RequestParam String taskName) {
         String taskIDQuery = "SELECT task_id FROM tasks WHERE name = '"+taskName+ "';";

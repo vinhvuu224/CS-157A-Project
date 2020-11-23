@@ -17,7 +17,7 @@ public class ProjectController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @CrossOrigin
+    @CrossOrigin(origins = "http://localhost:8080")
 
     /*
         List Projects

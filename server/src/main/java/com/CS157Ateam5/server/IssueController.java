@@ -15,7 +15,7 @@ public class IssueController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @CrossOrigin
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(value="/issues")
     public @ResponseBody List<Long> getUserIds(@RequestParam String issueName) {
         String issueIDQuery = "SELECT issue_id FROM issues WHERE name = '"+ issueName + "';";

@@ -1,27 +1,12 @@
 package com.CS157Ateam5.server;
 
-import com.CS157Ateam5.server.RegistErrorChecker;
-import com.CS157Ateam5.server.JWTUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-
-
-
-
 
 
 @RestController
@@ -31,8 +16,15 @@ public class UserController {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	 
-	 @CrossOrigin(origins = "http://localhost:8080")
-	 @PostMapping(value="/signup")
+	 @CrossOrigin
+	 @GetMapping(value="/")
+	 public @ResponseBody Long getUserIds(@RequestParam String userName) {
+		 String userIDQuery = "SELECT user_id FROM users WHERE name = '"+userName+ "';";
+		 long userID = jdbcTemplate.queryForObject(userIDQuery, Long.class);
+		 return userID;
+	 }
+
+	 @PostMapping(value="/")
 	 public @ResponseBody String addNewEntry(@RequestBody Users user) {
 		 	//RegistErrorChecker myObj = new RegistErrorChecker("","","");
 		 	List<String> usernameList = new ArrayList<>();
