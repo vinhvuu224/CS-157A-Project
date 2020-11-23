@@ -47,8 +47,7 @@ public class UserProjectPermissionController {
     }
 
     @PostMapping(value="/userprojects")
-    public @ResponseBody String addNewEntry(@RequestParam String user_id, @RequestParam long project_id,
-                                            @RequestParam long permission_id) {
+    public @ResponseBody String addNewEntry(@RequestBody String user_id, long project_id, long permission_id) {
 
         String existingQuery = "SELECT user_id FROM haveuserpermissionproject WHERE user_id="+user_id+" AND project_id="
                 + project_id + ";";
@@ -58,28 +57,10 @@ public class UserProjectPermissionController {
             return "Existing user project permission relationship";
         }
         catch(NullPointerException e){
-            String projectUserQuery = "INSERT INTO haveuserpermissionproject(user_id, project_id, permission_id)" +
-                    " VALUES(" + user_id + ", " + project_id + ", " +
+            String projectUserQuery = "INSERT INTO haveuserpermissionproject VALUES(" + user_id + ", " + project_id + ", " +
                     permission_id + ");";
-            jdbcTemplate.update(projectUserQuery);
+            List<String> projectUserList = new ArrayList<>(jdbcTemplate.queryForList(projectUserQuery, String.class));
             return "Success";
         }
-    }
-
-    @PatchMapping(value="/userprojects")
-    public @ResponseBody String updateEntry(@RequestParam long user_id, @RequestParam long project_id,
-                                            @RequestParam long permission_id) {
-        String userProjectUpdateQuery = "UPDATE haveuserpermissionproject SET " + permission_id + " = " + permission_id + " " +
-                "WHERE project_id="+project_id+" AND user_id="+user_id+";";
-        jdbcTemplate.update(userProjectUpdateQuery);
-        return "Success";
-    }
-
-    @DeleteMapping(value="/userprojects")
-    public @ResponseBody String deleteEntry(@RequestParam long project_id, @RequestParam long user_id) {
-        String userPorjectDeleteQuery = "DELETE FROM haveuserpermissionproject WHERE project_id="+project_id+" AND " +
-                "user_id="+user_id+";";
-        jdbcTemplate.update(userPorjectDeleteQuery);
-        return "Success";
     }
 }
