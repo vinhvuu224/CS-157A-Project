@@ -75,7 +75,7 @@ const Home = () => {
                             e.preventDefault();
                             setTitle('Editing Project');
                             setDescription('Please rename your project here.');
-                            setOpen(true);
+                            handleClickOpen();
                           }}
                         >
                           <CreateIcon />
@@ -89,7 +89,7 @@ const Home = () => {
                             setDescription(
                               'Are you sure you want to delete your project?'
                             );
-                            setOpen(true);
+                            handleClickOpen();
                           }}
                         >
                           <DeleteIcon />
@@ -108,7 +108,7 @@ const Home = () => {
                   e.preventDefault();
                   setTitle('Adding Project');
                   setDescription('Please name your project here.');
-                  setOpen(true);
+                  handleClickOpen();
                 }}
               >
                 <AddIcon />

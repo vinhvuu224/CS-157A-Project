@@ -14,6 +14,7 @@ const Container = styled.div`
 const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
+
   //Persiting changes after dragging
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
