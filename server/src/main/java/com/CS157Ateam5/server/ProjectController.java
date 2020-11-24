@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:8080")
 public class ProjectController {
 
     @Autowired
@@ -42,14 +42,14 @@ public class ProjectController {
     public @ResponseBody String updateEntry(@RequestParam long project_id, @RequestParam String paramName,
                                             @RequestParam Object paramValue) {
         String taskUpdateQuery = "UPDATE projects SET " + paramName + " = " + paramValue + " WHERE project_id="+project_id+";";
-        jdbcTemplate.execute(taskUpdateQuery);
+        jdbcTemplate.update(taskUpdateQuery);
         return "Success";
     }
 
     @DeleteMapping(value="/projects")
     public @ResponseBody String deleteEntry(@RequestParam long project_id) {
         String projectUpdateQuery = "DELETE FROM projects WHERE project_id="+project_id+";";
-        jdbcTemplate.execute(projectUpdateQuery);
+        jdbcTemplate.update(projectUpdateQuery);
         return "Success";
     }
 }
