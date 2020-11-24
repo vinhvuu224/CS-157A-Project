@@ -23,7 +23,7 @@ public class HaveTaskController {
         List Projects with user as member
      */
     @GetMapping(value = "/havetasks")
-    public @ResponseBody List<Long> getEntry(@RequestParam long projectId) {
+    public @ResponseBody List<Long> getEntry(@RequestParam Long projectId) {
 
        String projectTaskQuery = "SELECT task_id FROM havetasks WHERE Project_id="+projectId+";";
        List<Long> projectTaskList = new ArrayList(jdbcTemplate.queryForList(projectTaskQuery, Long.class));
@@ -37,21 +37,20 @@ public class HaveTaskController {
                 + task_id + ";";
 
         try {
-            jdbcTemplate.queryForObject(existingQuery, Long.class);
+            long existingTaslID = jdbcTemplate.queryForObject(existingQuery, Long.class);
             return "Existing task project relationship";
         }
         catch(NullPointerException e){
-            String projectTaskQuery = "INSERT INTO havetasks(project_id, task_id) VALUES(" + project_id + ", " + task_id
-                    + ");";
-            jdbcTemplate.update(projectTaskQuery);
+            String projectUserQuery = "INSERT INTO havetasks VALUES(" + project_id + ", " + task_id + ");";
+            jdbcTemplate.update(projectUserQuery);
             return "Success";
         }
     }
 
     @DeleteMapping(value="/havetasks")
     public @ResponseBody String deleteEntry(@RequestParam long task_id) {
-        String projectTaskDeleteQuery = "DELETE FROM havetasks WHERE Task_id="+task_id+";";
-        jdbcTemplate.update(projectTaskDeleteQuery);
+        String issueUpdateQuery = "DELETE FROM havetasks WHERE Task_id="+task_id+";";
+        jdbcTemplate.update(issueUpdateQuery);
         return "Success";
     }
 }

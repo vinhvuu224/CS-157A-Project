@@ -47,7 +47,8 @@ public class UserProjectPermissionController {
     }
 
     @PostMapping(value="/userprojects")
-    public @ResponseBody String addNewEntry(@RequestBody String user_id, long project_id, long permission_id) {
+    public @ResponseBody String addNewEntry(@RequestParam String user_id, @RequestParam long project_id,
+                                            @RequestParam long permission_id) {
 
         String existingQuery = "SELECT user_id FROM haveuserpermissionproject WHERE user_id="+user_id+" AND project_id="
                 + project_id + ";";
@@ -59,8 +60,25 @@ public class UserProjectPermissionController {
         catch(NullPointerException e){
             String projectUserQuery = "INSERT INTO haveuserpermissionproject VALUES(" + user_id + ", " + project_id + ", " +
                     permission_id + ");";
-            List<String> projectUserList = new ArrayList<>(jdbcTemplate.queryForList(projectUserQuery, String.class));
+            jdbcTemplate.update(projectUserQuery);
             return "Success";
         }
+    }
+
+    @PatchMapping(value="/userprojects")
+    public @ResponseBody String updateEntry(@RequestParam long user_id, @RequestParam long project_id,
+                                            @RequestParam long permission_id) {
+        String taskUpdateQuery = "UPDATE haveuserpermissionproject SET " + permission_id + " = " + permission_id + " " +
+                "WHERE project_id="+project_id+" AND user_id="+user_id+";";
+        jdbcTemplate.update(taskUpdateQuery);
+        return "Success";
+    }
+
+    @DeleteMapping(value="/userprojects")
+    public @ResponseBody String deleteEntry(@RequestParam long project_id, @RequestParam long user_id) {
+        String issueUpdateQuery = "DELETE FROM haveuserpermissionproject WHERE project_id="+project_id+" AND " +
+                "user_id="+user_id+";";
+        jdbcTemplate.update(issueUpdateQuery);
+        return "Success";
     }
 }

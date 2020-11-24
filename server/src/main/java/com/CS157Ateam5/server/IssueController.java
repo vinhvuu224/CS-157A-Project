@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:8080")
 public class IssueController {
 
     @Autowired
@@ -38,14 +38,14 @@ public class IssueController {
     public @ResponseBody String updateEntry(@RequestParam long issue_id, @RequestParam String paramName,
                                             @RequestParam Object paramValue) {
         String taskUpdateQuery = "UPDATE issues SET " + paramName + " = " + paramValue + " WHERE issue_id="+issue_id+";";
-        jdbcTemplate.execute(taskUpdateQuery);
+        jdbcTemplate.update(taskUpdateQuery);
         return "Success";
     }
 
     @DeleteMapping(value="/issues")
     public @ResponseBody String deleteEntry(@RequestParam long issue_id) {
         String issueUpdateQuery = "DELETE FROM issues WHERE issue_id="+issue_id+";";
-        jdbcTemplate.execute(issueUpdateQuery);
+        jdbcTemplate.update(issueUpdateQuery);
         return "Success";
     }
 }
