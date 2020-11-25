@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { getTasks } from '../../actions/task';
 const initialData = () => {
   const initialData = {
     tasks: {
