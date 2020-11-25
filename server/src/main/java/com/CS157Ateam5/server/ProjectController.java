@@ -22,34 +22,46 @@ public class ProjectController {
     /*
         List Projects
      */
-    @GetMapping(value="/projects")
-    public @ResponseBody List<Long> getProjectIds(@RequestParam String projectName) {
-        String projectIDQuery = "SELECT project_id FROM projects WHERE name = '"+projectName+ "';";
-        List<Long> projectIDList = new ArrayList(jdbcTemplate.queryForList(projectIDQuery, String.class));
-        return projectIDList;
+    @GetMapping(value = "/projects")
+    public @ResponseBody
+    Object getProject(@RequestParam(required = false, defaultValue = "0") long projectId,
+                      @RequestParam(required = false, defaultValue = "") String projectName) {
+        if (!(projectId == 0)) {
+            String projectNameQuery = "SELECT name FROM projects WHERE project_id = '" + projectId + "';";
+            String projectNameFetch = jdbcTemplate.queryForObject(projectNameQuery, String.class);
+            return projectNameFetch;
+        } else if (!projectName.equals("")) {
+            String projectIDQuery = "SELECT project_id FROM projects WHERE name = '" + projectName + "';";
+            List<Long> projectIDList = new ArrayList(jdbcTemplate.queryForList(projectIDQuery, Long.class));
+            return projectIDList;
+        } else {
+            return "Missing projectName and projectId parameters";
+        }
     }
 
-    @PostMapping(value="/projects")
-    public @ResponseBody String addNewEntry(@RequestBody Projects project) {
-        jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProjectName()+"')");
+    @PostMapping(value = "/projects")
+    public @ResponseBody
+    String addNewEntry(@RequestBody Projects project) {
+        jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProjectName() + "')");
         return "Successful";
     }
 
     /*
         Provide parameter name to be changed and the new value when sending request
      */
-    @PatchMapping(value="/projects")
-    public @ResponseBody String updateEntry(@RequestParam long project_id, @RequestParam String paramName,
-                                            @RequestParam Object paramValue) {
-        String taskUpdateQuery = "UPDATE projects SET " + paramName + " = " + paramValue + " WHERE project_id="+project_id+";";
-        jdbcTemplate.update(taskUpdateQuery);
+    @PatchMapping(value = "/projects")
+    public @ResponseBody
+    String updateEntry(@RequestParam long project_id, @RequestParam String projectName) {
+        String projectUpdateQuery = "UPDATE projects SET name=" + projectName + " WHERE project_id=" + project_id + ";";
+        jdbcTemplate.update(projectUpdateQuery);
         return "Success";
     }
 
-    @DeleteMapping(value="/projects")
-    public @ResponseBody String deleteEntry(@RequestParam long project_id) {
-        String projectUpdateQuery = "DELETE FROM projects WHERE project_id="+project_id+";";
-        jdbcTemplate.update(projectUpdateQuery);
+    @DeleteMapping(value = "/projects")
+    public @ResponseBody
+    String deleteEntry(@RequestParam long project_id) {
+        String projectDeleteQuery = "DELETE FROM projects WHERE project_id=" + project_id + ";";
+        jdbcTemplate.update(projectDeleteQuery);
         return "Success";
     }
 }
