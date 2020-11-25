@@ -46,8 +46,8 @@ public class InController {
 
     @DeleteMapping(value="/in")
     public @ResponseBody String deleteEntry(@RequestParam long user_id) {
-        String lcoationDeleteQuery = "DELETE FROM `in` WHERE user_id="+user_id+";";
-        jdbcTemplate.update(lcoationDeleteQuery);
+        String locationDeleteQuery = "DELETE FROM `in` WHERE user_id="+user_id+";";
+        jdbcTemplate.update(locationDeleteQuery);
         return "Success";
     }
 }

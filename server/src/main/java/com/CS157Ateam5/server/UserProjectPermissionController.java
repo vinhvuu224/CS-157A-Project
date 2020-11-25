@@ -58,7 +58,8 @@ public class UserProjectPermissionController {
             return "Existing user project permission relationship";
         }
         catch(NullPointerException e){
-            String projectUserQuery = "INSERT INTO haveuserpermissionproject VALUES(" + user_id + ", " + project_id + ", " +
+            String projectUserQuery = "INSERT INTO haveuserpermissionproject(user_id, project_id, permission_id)" +
+                    " VALUES(" + user_id + ", " + project_id + ", " +
                     permission_id + ");";
             jdbcTemplate.update(projectUserQuery);
             return "Success";
@@ -68,17 +69,17 @@ public class UserProjectPermissionController {
     @PatchMapping(value="/userprojects")
     public @ResponseBody String updateEntry(@RequestParam long user_id, @RequestParam long project_id,
                                             @RequestParam long permission_id) {
-        String taskUpdateQuery = "UPDATE haveuserpermissionproject SET " + permission_id + " = " + permission_id + " " +
+        String userProjectUpdateQuery = "UPDATE haveuserpermissionproject SET " + permission_id + " = " + permission_id + " " +
                 "WHERE project_id="+project_id+" AND user_id="+user_id+";";
-        jdbcTemplate.update(taskUpdateQuery);
+        jdbcTemplate.update(userProjectUpdateQuery);
         return "Success";
     }
 
     @DeleteMapping(value="/userprojects")
     public @ResponseBody String deleteEntry(@RequestParam long project_id, @RequestParam long user_id) {
-        String issueUpdateQuery = "DELETE FROM haveuserpermissionproject WHERE project_id="+project_id+" AND " +
+        String userProjectDeleteQuery = "DELETE FROM haveuserpermissionproject WHERE project_id="+project_id+" AND " +
                 "user_id="+user_id+";";
-        jdbcTemplate.update(issueUpdateQuery);
+        jdbcTemplate.update(userProjectDeleteQuery);
         return "Success";
     }
 }

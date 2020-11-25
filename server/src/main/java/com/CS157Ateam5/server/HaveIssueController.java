@@ -18,10 +18,10 @@ public class HaveIssueController {
     @CrossOrigin
 
     /*
-        List Projects with user as member
+        List Tasks in project
      */
     @GetMapping(value = "/haveissues")
-    public @ResponseBody List<Long> getEntry(@RequestParam Long projectId) {
+    public @ResponseBody List<Long> getEntry(@RequestParam long projectId) {
 
        String projectIssueQuery = "SELECT issue_id FROM haveissues WHERE Project_id="+projectId+";";
        List<Long> projectIssueList = new ArrayList(jdbcTemplate.queryForList(projectIssueQuery, Long.class));
@@ -35,20 +35,28 @@ public class HaveIssueController {
                 + issue_id + ";";
 
         try {
-            long existingIssuelID = jdbcTemplate.queryForObject(existingQuery, Long.class);
+            jdbcTemplate.queryForObject(existingQuery, Long.class);
             return "Existing task project relationship";
         }
         catch(NullPointerException e){
-            String projectIssueQuery = "INSERT INTO haveissues VALUES(" + project_id + ", " + issue_id + ");";
+            String projectIssueQuery = "INSERT INTO haveissues(project_id, issue_id) VALUES(" + project_id + ", " + issue_id + ");";
             jdbcTemplate.update(projectIssueQuery);
             return "Success";
         }
     }
 
     @DeleteMapping(value="/haveissues")
-    public @ResponseBody String deleteEntry(@RequestParam long task_id) {
-        String issueUpdateQuery = "DELETE FROM havetasks WHERE Task_id="+task_id+";";
-        jdbcTemplate.update(issueUpdateQuery);
+    public @ResponseBody String deleteEntry(@RequestParam(required = false, defaultValue = "0") long project_id,
+                                            @RequestParam(required = false, defaultValue = "0") long issue_id) {
+        String issueDeleteQuery = "";
+        if(!(project_id==0)) {
+            issueDeleteQuery = "DELETE FROM haveissues WHERE project_id=" + project_id + ";";
+        }
+        else if(!(issue_id==0)) {
+            issueDeleteQuery = "DELETE FROM haveissues WHERE issue_id=" + issue_id + ";";
+        }
+        else return "Missing project_id and issue_id";
+        jdbcTemplate.update(issueDeleteQuery);
         return "Success";
     }
 }

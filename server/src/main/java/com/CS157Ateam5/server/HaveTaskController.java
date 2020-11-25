@@ -23,7 +23,7 @@ public class HaveTaskController {
         List Projects with user as member
      */
     @GetMapping(value = "/havetasks")
-    public @ResponseBody List<Long> getEntry(@RequestParam Long projectId) {
+    public @ResponseBody List<Long> getEntry(@RequestParam long projectId) {
 
        String projectTaskQuery = "SELECT task_id FROM havetasks WHERE Project_id="+projectId+";";
        List<Long> projectTaskList = new ArrayList(jdbcTemplate.queryForList(projectTaskQuery, Long.class));
@@ -37,20 +37,29 @@ public class HaveTaskController {
                 + task_id + ";";
 
         try {
-            long existingTaslID = jdbcTemplate.queryForObject(existingQuery, Long.class);
+            jdbcTemplate.queryForObject(existingQuery, Long.class);
             return "Existing task project relationship";
         }
         catch(NullPointerException e){
-            String projectUserQuery = "INSERT INTO havetasks VALUES(" + project_id + ", " + task_id + ");";
-            jdbcTemplate.update(projectUserQuery);
+            String projectTaskQuery = "INSERT INTO havetasks(project_id, task_id) VALUES(" + project_id + ", " + task_id
+                    + ");";
+            jdbcTemplate.update(projectTaskQuery);
             return "Success";
         }
     }
 
     @DeleteMapping(value="/havetasks")
-    public @ResponseBody String deleteEntry(@RequestParam long task_id) {
-        String issueUpdateQuery = "DELETE FROM havetasks WHERE Task_id="+task_id+";";
-        jdbcTemplate.update(issueUpdateQuery);
+    public @ResponseBody String deleteEntry(@RequestParam(required = false, defaultValue = "0") long project_id,
+                                            @RequestParam(required = false, defaultValue = "0") long task_id) {
+        String taskDeleteQuery = "";
+        if(!(project_id==0)) {
+            taskDeleteQuery = "DELETE FROM havetasks WHERE Project_id=" + project_id + ";";
+        }
+        else if(!(task_id==0)) {
+            taskDeleteQuery = "DELETE FROM havetasks WHERE Task_id=" + task_id + ";";
+        }
+        else return "Missing project_id and task_id";
+        jdbcTemplate.update(taskDeleteQuery);
         return "Success";
     }
 }

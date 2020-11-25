@@ -21,8 +21,7 @@ public class LocationController {
         List Projects
      */
     @GetMapping(value="/location")
-    public @ResponseBody Long getLocationId(@RequestParam String city, @RequestParam String state,
-                                                  @RequestParam String country) {
+    public @ResponseBody Long getLocationId(@RequestParam String city, @RequestParam String state) {
         String locationIDQuery = "SELECT location_id FROM location WHERE city = '"+city+ "' AND state='"+state+"';";
         Long locationId = jdbcTemplate.queryForObject(locationIDQuery, Long.class);
         return locationId;
