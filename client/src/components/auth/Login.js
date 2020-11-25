@@ -49,11 +49,17 @@ const Login = () => {
   const classes = useStyles();
   const [formState, setForm] = useState({
     emailUsername: '',
+    emailUsernameError: '',
     password: '',
     passwordError: '',
   });
 
-  const { emailUsername, password, passwordError } = formState;
+  const {
+    emailUsername,
+    emailUsernameError,
+    password,
+    passwordError,
+  } = formState;
 
   const onChange = (e) =>
     setForm({ ...formState, [e.target.name]: e.target.value });
@@ -64,12 +70,14 @@ const Login = () => {
     let errors;
     if (res) {
       errors = {
-        passwordError: res.general,
+        emailUsernameError: res.emailUsernameError,
+        passwordError: res.passwordError,
       };
       setForm({ ...formState, ...errors });
     } else {
       setForm({
         emailUsername: '',
+        emailUsernameError: '',
         password: '',
         passwordError: '',
       });
@@ -92,6 +100,7 @@ const Login = () => {
                 </Typography>
                 <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
                   <TextField
+                    error={emailUsernameError}
                     variant='outlined'
                     margin='normal'
                     required
@@ -104,7 +113,9 @@ const Login = () => {
                     autoComplete='email'
                     autoFocus
                   />
+                  <FormHelperText error>{emailUsernameError}</FormHelperText>
                   <TextField
+                    error={passwordError}
                     variant='outlined'
                     margin='normal'
                     required

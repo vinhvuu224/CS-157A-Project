@@ -14,6 +14,7 @@ const Container = styled.div`
 const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
+
   //Persiting changes after dragging
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
@@ -76,7 +77,7 @@ const Storyboard = () => {
       transition={{ delay: 0.5, duration: 1 }}
     >
       <DragDropContext onDragEnd={onDragEnd}>
-        <h3 style={{ marginLeft: 10 }}>{location.projectName}</h3>
+        <h3 style={{ marginLeft: '1%' }}>{location.projectName}</h3>
         <Container>
           {state.columnOrder.map((columnId) => {
             const column = state.columns[columnId];
