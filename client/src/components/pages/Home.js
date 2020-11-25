@@ -13,6 +13,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import ProjectPopup from '../popups/ProjectPopup';
+import { getProjects } from '../../actions/projects';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -24,6 +27,15 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
+  const [projects, setProjects] = useState([])
+
+  useEffect(()=>{
+    getProjects()
+      .then( res => res.map( name => ({name})))
+      .then( res => setProjects(res));
+  }, [] )
+
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -33,10 +45,10 @@ const Home = () => {
   };
   const classes = useStyles();
   let history = useHistory();
-  const projects = [{ name: 'etst' }, { name: '12312' }, { name: 'Rsadwqqdw' }];
   function nextPage(e) {
     history.push({ pathname: '/Storyboard', projectName: e });
   }
+
   return (
     <div className={classes.root}>
       <Grid container spacing={2} direction='column'>
@@ -50,7 +62,7 @@ const Home = () => {
             <Paper elevation={3}>
               <h3 style={{ marginLeft: '20%' }}>Your Projects</h3>
               <Divider />
-              <List style={{ overflow: 'auto', height: 200 }}>
+              <List style={{ overflowY: 'auto', height: '500px' }}>
                 {projects.map((project) => {
                   return (
                     <div>
