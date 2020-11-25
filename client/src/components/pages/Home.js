@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
@@ -13,12 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import ProjectPopup from '../popups/ProjectPopup';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -28,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const [open, setOpen] = useState(false);
-
+  const [title, setTitle] = useState(null);
+  const [description, setDescription] = useState(null);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -73,10 +68,30 @@ const Home = () => {
                             style={{ maxWidth: 200 }}
                           />
                         </ListItem>
-                        <IconButton aria-label='Edit' color='primary'>
+                        <IconButton
+                          aria-label='Edit'
+                          color='primary'
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setTitle('Editing Project');
+                            setDescription('Please rename your project here.');
+                            handleClickOpen();
+                          }}
+                        >
                           <CreateIcon />
                         </IconButton>
-                        <IconButton aria-label='Add' color='secondary'>
+                        <IconButton
+                          aria-label='Add'
+                          color='secondary'
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setTitle('Deleting Project');
+                            setDescription(
+                              'Are you sure you want to delete your project?'
+                            );
+                            handleClickOpen();
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </ListItem>
@@ -89,43 +104,22 @@ const Home = () => {
                 aria-label='Add'
                 color='primary'
                 style={{ marginLeft: '40%' }}
-                onClick={handleClickOpen}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTitle('Adding Project');
+                  setDescription('Please name your project here.');
+                  handleClickOpen();
+                }}
               >
                 <AddIcon />
               </IconButton>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby='form-dialog-title'
-              >
-                <DialogTitle id='form-dialog-title'>Adding Project</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Please name your project here.
-                  </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin='dense'
-                    id='name'
-                    label='Project name'
-                    type='email'
-                    fullWidth
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={handleClose}
-                    color='primary'
-                    variant='contained'
-                  >
-                    Add
-                  </Button>
-                  <Button onClick={handleClose} color='primary'>
-                    Cancel
-                  </Button>
-                </DialogActions>
-              </Dialog>
             </Paper>
+            <ProjectPopup
+              title={title}
+              open={open}
+              description={description}
+              handleClose={handleClose}
+            ></ProjectPopup>
           </motion.div>
         </Grid>
       </Grid>
@@ -134,3 +128,66 @@ const Home = () => {
 };
 
 export default Home;
+
+//  <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
+//    <DialogTitle id='form-dialog-title'>Editing Project</DialogTitle>
+//    <DialogContent>
+//      <DialogContentText>Please rename your project here.</DialogContentText>
+//      <TextField
+//        autoFocus
+//        margin='dense'
+//        id='name'
+//        label='Project name'
+//        type='email'
+//        fullWidth
+//      />
+//    </DialogContent>
+//    <DialogActions>
+//      <Button onClick={handleClose} color='primary' variant='contained'>
+//        Confirm
+//      </Button>
+//      <Button onClick={handleClose} color='primary'>
+//        Cancel
+//      </Button>
+//    </DialogActions>
+//  </Dialog>;
+
+//   <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
+//     <DialogTitle id='form-dialog-title'>Deleting Project</DialogTitle>
+//     <DialogContent>
+//       <DialogContentText>
+//         Are you sure you want to delete your project?
+//       </DialogContentText>
+//     </DialogContent>
+//     <DialogActions>
+//       <Button onClick={handleClose} color='primary' variant='contained'>
+//         Confirm
+//       </Button>
+//       <Button onClick={handleClose} color='primary'>
+//         Cancel
+//       </Button>
+//     </DialogActions>
+//   </Dialog>;
+
+//  <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
+//    <DialogTitle id='form-dialog-title'>Adding Project</DialogTitle>
+//    <DialogContent>
+//      <DialogContentText>Please name your project here.</DialogContentText>
+//      <TextField
+//        autoFocus
+//        margin='dense'
+//        id='name'
+//        label='Project name'
+//        type='email'
+//        fullWidth
+//      />
+//    </DialogContent>
+//    <DialogActions>
+//      <Button onClick={handleClose} color='primary' variant='contained'>
+//        Add
+//      </Button>
+//      <Button onClick={handleClose} color='primary'>
+//        Cancel
+//      </Button>
+//    </DialogActions>
+//  </Dialog>;

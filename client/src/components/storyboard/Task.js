@@ -29,10 +29,32 @@ const Task = (props) => {
           <Typography variant='body2' color='textSecondary' component='p'>
             {props.task.description}
           </Typography>
-          <IconButton aria-label='Edit' color='primary'>
+          <IconButton
+            aria-label='Edit'
+            color='primary'
+            onClick={(e) => {
+              e.preventDefault();
+              props.setTitle('Editing Task');
+              props.setDescription(
+                'Please rename your task and description here.'
+              );
+              props.handleClickOpen();
+            }}
+          >
             <CreateIcon />
           </IconButton>
-          <IconButton aria-label='Add' color='secondary'>
+          <IconButton
+            aria-label='Add'
+            color='secondary'
+            onClick={(e) => {
+              e.preventDefault();
+              props.setTitle('Deleting Task');
+              props.setDescription(
+                'Are you sure you want to delete your task?'
+              );
+              props.handleClickOpen();
+            }}
+          >
             <DeleteIcon />
           </IconButton>
         </Container>
