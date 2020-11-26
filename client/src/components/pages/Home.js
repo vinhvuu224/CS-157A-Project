@@ -15,9 +15,13 @@ import AddIcon from '@material-ui/icons/Add';
 import ProjectPopup from '../popups/ProjectPopup';
 import { getProjects } from '../../actions/projects';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { UserContext } from '../../UserContext';
 =======
 >>>>>>> 28e01e1... display projects from database
+=======
+import { UserContext } from '../../UserContext';
+>>>>>>> 2dfac29... usercontext
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +44,7 @@ const Home = () => {
   }, [] )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const {user,setUser} = useContext(UserContext)
   console.log(user)
 
@@ -47,6 +52,10 @@ const Home = () => {
   console.log("This is the user_id: ", testing)
 =======
 >>>>>>> 28e01e1... display projects from database
+=======
+  const {user,setUser} = useContext(UserContext)
+  console.log(user)
+>>>>>>> 2dfac29... usercontext
 
   const handleClickOpen = () => {
     setOpen(true);
