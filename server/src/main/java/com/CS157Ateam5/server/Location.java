@@ -2,10 +2,19 @@ package com.CS157Ateam5.server;
 
 public class Location {
     private long location_id;
+
     private String city;
     private String state;
     private String country;
     private String time_zone;
+
+    public Location(long location_id, String city, String state, String country, String time_zone) {
+        this.location_id = location_id;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.time_zone = time_zone;
+    }
 
     public String getTime_zone() {
         return time_zone;
@@ -40,11 +49,6 @@ public class Location {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public Location(long location_id, String city) {
-        this.location_id = location_id;
-        this.city = city;
     }
 
     public long getLocation_id() {

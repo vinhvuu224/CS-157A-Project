@@ -17,47 +17,37 @@ public class UserProjectPermissionController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public UserProjectPermissionController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @CrossOrigin
 
     /*
         List Projects with user as member
      */
     @GetMapping(value = "/userprojects")
-    public @ResponseBody List<String> getEntry(@RequestParam(required = false, defaultValue = "") String username,
-                                               @RequestParam(required = false, defaultValue = "0") Long projectId) {
+    public @ResponseBody
+    String getEntry(@RequestParam long user_id, @RequestParam long project_id) {
 
-        if(!username.equals("")) {
-            String useridQuery = "SELECT user_id from Users WHERE username = '" + username + "';";
-            long user_id = jdbcTemplate.queryForObject(useridQuery, Long.class);
-            String projectUserQuery = "SELECT name FROM haveuserpermissionproject JOIN projects USING (project_id)" +
-                    "WHERE user_id = " + user_id + "  ;";
-            List<String> projectUserList = new ArrayList<>(jdbcTemplate.queryForList(projectUserQuery, String.class));
-            return projectUserList;
-        }
-        else if(!(projectId == 0)) {
-            String projectUserQuery = "SELECT username FROM haveuserpermissionproject JOIN users USING (user_id)" +
-                    "WHERE project_id = " + projectId + "  ;";
-            List<String> projectUserList = new ArrayList<>(jdbcTemplate.queryForList(projectUserQuery, String.class));
-            return projectUserList;
-        }
-        else {
-            //ERROR: BOTH PARAMS MISSING
-            return null;
-        }
+        String projectUserQuery = "SELECT permission_level FROM haveuserpermissionproject JOIN permissions USING " +
+                "(permission_id)" + " WHERE project_id = " + project_id + " AND user_id = " + user_id + ";";
+        String permission = jdbcTemplate.queryForObject(projectUserQuery, String.class);
+        return permission;
     }
 
-    @PostMapping(value="/userprojects")
-    public @ResponseBody String addNewEntry(@RequestParam String user_id, @RequestParam long project_id,
-                                            @RequestParam long permission_id) {
+    @PostMapping(value = "/userprojects")
+    public @ResponseBody
+    String addNewEntry(@RequestParam String user_id, @RequestParam long project_id,
+                       @RequestParam long permission_id) {
 
-        String existingQuery = "SELECT user_id FROM haveuserpermissionproject WHERE user_id="+user_id+" AND project_id="
+        String existingQuery = "SELECT user_id FROM haveuserpermissionproject WHERE user_id=" + user_id + " AND project_id="
                 + project_id + ";";
 
         try {
-            long existingUserID = jdbcTemplate.queryForObject(existingQuery, Long.class);
+            jdbcTemplate.queryForObject(existingQuery, long.class);
             return "Existing user project permission relationship";
-        }
-        catch(NullPointerException e){
+        } catch (Exception e) {
             String projectUserQuery = "INSERT INTO haveuserpermissionproject(user_id, project_id, permission_id)" +
                     " VALUES(" + user_id + ", " + project_id + ", " +
                     permission_id + ");";
@@ -66,20 +56,32 @@ public class UserProjectPermissionController {
         }
     }
 
-    @PatchMapping(value="/userprojects")
-    public @ResponseBody String updateEntry(@RequestParam long user_id, @RequestParam long project_id,
-                                            @RequestParam long permission_id) {
-        String userProjectUpdateQuery = "UPDATE haveuserpermissionproject SET " + permission_id + " = " + permission_id + " " +
-                "WHERE project_id="+project_id+" AND user_id="+user_id+";";
+    @PatchMapping(value = "/userprojects")
+    public @ResponseBody
+    String updateEntry(@RequestParam long user_id, @RequestParam long project_id,
+                       @RequestParam long permission_id) {
+        String userProjectUpdateQuery = "UPDATE haveuserpermissionproject SET permission_id = " + permission_id + " " +
+                "WHERE project_id=" + project_id + " AND user_id=" + user_id + ";";
         jdbcTemplate.update(userProjectUpdateQuery);
         return "Success";
     }
 
-    @DeleteMapping(value="/userprojects")
-    public @ResponseBody String deleteEntry(@RequestParam long project_id, @RequestParam long user_id) {
-        String userProjectDeleteQuery = "DELETE FROM haveuserpermissionproject WHERE project_id="+project_id+" AND " +
-                "user_id="+user_id+";";
+    @DeleteMapping(value = "/userprojects")
+    public @ResponseBody
+    String deleteEntry(@RequestParam long project_id, @RequestParam(required = false, defaultValue = "0") long user_id) {
+        String userProjectDeleteQuery = "DELETE FROM haveuserpermissionproject WHERE project_id=" + project_id;
+        String permissionDeleteQuery = "SELECT permission_id from haveuserpermissionproject WHERE project_id="+ project_id;
+        if(user_id==0) {
+            userProjectDeleteQuery += ";";
+            permissionDeleteQuery += ";";
+        }
+        else {
+            userProjectDeleteQuery += " AND user_id="+user_id+";";
+            permissionDeleteQuery += " AND user_id="+user_id+";";
+        }
         jdbcTemplate.update(userProjectDeleteQuery);
+        List<Long> list = jdbcTemplate.queryForList(permissionDeleteQuery, long.class);
+        for(long permission_id: list) new PermissionController().deleteEntry(permission_id);
         return "Success";
     }
 }

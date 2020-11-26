@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -17,12 +18,19 @@ public class IssueController {
 
     @CrossOrigin
     @GetMapping(value="/issues")
-    public @ResponseBody List<Long> getUserIds(@RequestParam String issueName) {
-        String issueIDQuery = "SELECT issue_id FROM issues WHERE name = '"+ issueName + "';";
-        List<Long> issueIDList = new ArrayList(jdbcTemplate.queryForList(issueIDQuery, Long.class));
-        return issueIDList;
-    }
+    public @ResponseBody Object getIssues(@RequestParam String project_id) {
+        String query = "select issues.issue_id, issues.name, issues.description, issues.priority_level from issues " +
+                "join haveissues using (issue_id) join projects using (project_id)" + " where project_id="+project_id+";";
 
+        List<Issues> issues = new ArrayList<>();
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
+        for (Map row : rows) {
+            Issues issue = new Issues((int) row.get("issue_id"), (String) row.get("name"),
+                    (String) row.get("description"), (String) row.get("priority_level"));
+            issues.add(issue);
+        }
+        return issues;
+    }
 
     @PostMapping(value="/issues")
     public @ResponseBody String addNewEntry(@RequestBody Issues issue) {
@@ -35,9 +43,9 @@ public class IssueController {
         Provide parameter name to be changed and the new value when sending request
      */
     @PatchMapping(value="/issues")
-    public @ResponseBody String updateEntry(@RequestParam long issue_id, @RequestParam String paramName,
-                                            @RequestParam Object paramValue) {
-        String taskUpdateQuery = "UPDATE issues SET " + paramName + " = " + paramValue + " WHERE issue_id="+issue_id+";";
+    public @ResponseBody String updateEntry(@RequestParam long issue_id, @RequestParam String param_name,
+                                            @RequestParam Object param_value) {
+        String taskUpdateQuery = "UPDATE issues SET " + param_name + " = '" + param_value + "' WHERE issue_id="+issue_id+";";
         jdbcTemplate.update(taskUpdateQuery);
         return "Success";
     }
@@ -46,6 +54,7 @@ public class IssueController {
     public @ResponseBody String deleteEntry(@RequestParam long issue_id) {
         String issueUpdateQuery = "DELETE FROM issues WHERE issue_id="+issue_id+";";
         jdbcTemplate.update(issueUpdateQuery);
+        new HaveIssueController(jdbcTemplate).deleteEntry(0, issue_id);
         return "Success";
     }
 }

@@ -15,30 +15,22 @@ public class HaveIssueController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @CrossOrigin
-
-    /*
-        List Tasks in project
-     */
-    @GetMapping(value = "/haveissues")
-    public @ResponseBody List<Long> getEntry(@RequestParam long projectId) {
-
-       String projectIssueQuery = "SELECT issue_id FROM haveissues WHERE Project_id="+projectId+";";
-       List<Long> projectIssueList = new ArrayList(jdbcTemplate.queryForList(projectIssueQuery, Long.class));
-       return projectIssueList;
+    public HaveIssueController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
+    @CrossOrigin
     @PostMapping(value="/haveissues")
     public @ResponseBody String addNewEntry(long project_id, long issue_id) {
 
-        String existingQuery = "SELECT issue_id FROM haveissues WHERE Project_id="+project_id+" AND issue_id="
+        String existingQuery = "SELECT issue_id FROM haveissues WHERE project_id="+project_id+" AND issue_id="
                 + issue_id + ";";
 
         try {
-            jdbcTemplate.queryForObject(existingQuery, Long.class);
-            return "Existing task project relationship";
+            jdbcTemplate.queryForObject(existingQuery, long.class);
+            return "Existing issue project relationship";
         }
-        catch(NullPointerException e){
+        catch(Exception e){
             String projectIssueQuery = "INSERT INTO haveissues(project_id, issue_id) VALUES(" + project_id + ", " + issue_id + ");";
             jdbcTemplate.update(projectIssueQuery);
             return "Success";

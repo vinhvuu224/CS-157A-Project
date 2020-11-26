@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -21,11 +22,18 @@ public class InController {
         List Issues in project
      */
     @GetMapping(value = "/in")
-    public @ResponseBody List<Long> getEntry(@RequestParam long user_id) {
+    public @ResponseBody List<Location> getEntry(@RequestParam long user_id) {
 
-       String userLocationQuery = "SELECT location_id FROM `in` WHERE user_id="+user_id+";";
-       List<Long> userLocationList = new ArrayList(jdbcTemplate.queryForList(userLocationQuery, Long.class));
-       return userLocationList;
+       String locationQuery = "SELECT location_id, city, state, country, time_zone FROM `in` JOIN location using" +
+               " (location_id) WHERE user_id="+user_id+";";
+       List<Map<String, Object>> rows = jdbcTemplate.queryForList(locationQuery);
+       List<Location> list = new ArrayList<>();
+       for (Map row : rows) {
+           Location loc = new Location((int) row.get("location_id"), (String) row.get("city"), (String) row.get("state"),
+                   (String) row.get("country"), (String) row.get("time_zone"));
+           list.add(loc);
+       }
+       return list;
     }
 
     @PostMapping(value="/in")
@@ -37,11 +45,21 @@ public class InController {
             long exisitingLocationId = jdbcTemplate.queryForObject(existingQuery, Long.class);
             return "Existing user location relationship";
         }
-        catch(NullPointerException e){
+        catch(Exception e){
             String userLocationQuery = "INSERT INTO `in`(user_id, location_id) VALUES(" + user_id + ", " + location_id + ");";
             jdbcTemplate.update(userLocationQuery);
             return "Success";
         }
+    }
+
+
+    @PatchMapping(value = "/in")
+    public @ResponseBody
+    String updateEntry(@RequestParam long location_id, @RequestParam long user_id) {
+        String inUpdateQuery = "UPDATE `in` SET location_id = " + location_id + " WHERE " +
+                "user_id=" + user_id + ";";
+        jdbcTemplate.update(inUpdateQuery);
+        return "Success";
     }
 
     @DeleteMapping(value="/in")

@@ -1,51 +1,61 @@
 API Usage guide:
 
-All DELETE Requests take one parameter: entity id, unless otherwise specified. 
-All POST requests, unless specified otherwise, need a body containing all attributes of the entity (except id).
-All GET, PATCH, and DELETE requests take parameters.
-
 /location - For accessing `location` entity
-- GET: Provide city and state to get location id.
-- PATCH: Provide location_id, name of the parameter to be changed (e.g. "state"), and parameter value. 
+- GET: Returns all locations
+- POST: (city, state, country, time_zone) - Body
+- PATCH: (location_id, param_name, param_value) (e.g. 1, "state" "California").
+- DELETE: (location_id)
 
 /permissions - For accessing `permissions` entity
-- GET: No get
-- PATCH: Provide permission_id, and new permission_level. 
+- GET: (permission_id) Returns permission_level
+- POST: (permission_level) - Body
+- PATCH: (permission_id, permission_level) (e.g. 1, "Full").
+- DELETE: (permission_id)
 
 /projects- For accessing `projects` entity
-- GET: Provide project_id to get project_name OR provide project_name to get all related project_ids.
-- PATCH: Provide project_id, and new projectName. 
+- GET: (username, project_name) Returns all tasks and issues associated with the project
+- POST: (project_name, username) - Body
+- PATCH: (project_id, project_name, username) (e.g. 1, "Bug Tracker", "Bug Watcher").
+- DELETE: (project_id) Deletes all corresponding relationships 
 
 /tasks- For accessing `tasks` entity
-- GET: Provide task_id to get task attributes OR provide taskName to get all related task_ids.
-- PATCH: Provide task_id, name of the parameter to be changed (e.g. "description"), and parameter value. 
+- GET: (project_id) Returns all tasks in project
+- POST: (name, description, progress) - Body
+- PATCH: (task_id, param_name, param_value) (e.g. 1, "progress"", "Done").
+- DELETE: (task_id) Deletes havetask relationships 
 
-/ - For accessing `users` entity
-- GET: Provide a username to get user attributes.
-
-/login - For logging in
-- No Get, Patch, Delete
+- For accessing `users` entity
+/users
+- GET: Use (username) Returns user attributes, location, and projects of the user
+"/"
+- POST: (username, email , password, confirmPassword) - Body
+/login
+- POST: (emailUsername , password) - Body
 
 /userprojects- For accessing `haveuserpermissionproject` entity
-- GET: Provide a username to get all connected project_ids OR provide project_id to get all connected usernames.
-- PATCH: Provide user_id, project_id, and new permission_id 
-- POST: Provide user_id, project_id, and permission_id 
+- GET: (user_id, project_id) Returns the permission_level for the user in that project
+- POST: (user_id, project_id, permission_id)
+- PATCH: (user_id, project_id, permission_id) (e.g. 1, 1, 2).
+- DELETE: (project_id, user_id (optional)) Deletes all corresponding project relationships or if user_id specified, 
+                                           all project-user relationships 
 
-/issues- For accessing `issues` entity
-- GET: Provide issue_id to get issue attributes OR provide issueName to get all related issue_ids.
-- PATCH: Provide issue_id, name of the parameter to be changed (e.g. "description"), and parameter value. 
+/issues- For accessing `isues` entity
+- GET: (project_id) Returns all issues in project
+- POST: (name, description, priority_level) - Body
+- PATCH: (issue_id, param_name, param_value) (e.g. 1, "priority_level"", "High").
+- DELETE: (issue_id) Deletes haveissue relationships 
 
 /haveissues- For accessing `haveissues` entity
-- GET: Provide project_id to get all related issues
-- PATCH: No patch
-- DELETE: Provide issue_id to delete issue-project relationship OR project_id to delete all related issues.
+- POST: (project_id, issue_id) 
+- DELETE: (project_id OR issue_id) Deletes all issues related to project_id or the specified issue_id depending on parameter 
 
 /havetasks - For accessing `havetasks` entity
-- GET: Provide project_id to get all related tasks
-- PATCH: No patch
-- DELETE: Provide task_id to delete task-project relationship OR project_id to delete all related tasks.
+- POST: (project_id, task_id) 
+- DELETE: (project_id OR task_id) Deletes all tasks related to project_id or the specified task_id depending on parameter 
 
 /in - For accessing `in` entity
-- GET: Provide user_id to get related location_id.
-- PATCH: Provide user_id, and new location_id. 
+- GET: (user_id) Returns corresponding location attributes.
+- POST: (user_id, location_id) 
+- PATCH: (location_id, user_id) Updates location_id for given user_id
+- DELETE: (user_id) Deletes corresponding location relationship 
 
