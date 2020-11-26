@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -14,6 +14,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import ProjectPopup from '../popups/ProjectPopup';
 import { getProjects } from '../../actions/projects';
+import { UserContext } from '../../UserContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,10 +36,13 @@ const Home = () => {
       .then( res => setProjects(res));
   }, [] )
 
+  const {user,setUser} = useContext(UserContext)
+  console.log(user)
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
 
   const handleClose = () => {
     setOpen(false);
