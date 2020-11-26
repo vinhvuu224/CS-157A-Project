@@ -71,15 +71,15 @@ export const login = async (emailUsername, password, history, setUser) => {
   });
   try {
     const res = await axios.post('/login', body, config);
-    if (res.data === 'Please enter a valid username/email.') {
-      data.emailUsernameError = res.data;
+    if (res.data.userEmailError === 'Please enter a valid username/email.') {
+      data.emailUsernameError = res.data.userEmailError;
       return data;
-    } else if (res.data === 'Incorrect password.') {
-      data.passwordError = res.data;
+    } else if (res.data.passError === 'Incorrect password.') {
+      data.passwordError = res.data.passError;
       return data;
     } else {
-      setAuthHeader(res.data);
-      setUser(res.data);
+      setAuthHeader(res.data.token);
+      setUser({user_id: res.data.user_id});
       history.push('/Home');
     }
   } catch (err) {
