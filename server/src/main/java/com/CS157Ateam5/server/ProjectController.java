@@ -96,6 +96,7 @@ public class ProjectController {
 >>>>>>> c17a2e8... grab user_id for context
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -121,6 +122,19 @@ public class ProjectController {
 		 	String projectQuery = "SELECT name FROM projects";
 			projectList.addAll(jdbcTemplate.queryForList(projectQuery, String.class));
 			return projectList;
+		 	
+}
+	 @CrossOrigin(origins = "http://localhost:8080")
+	 @GetMapping(value="/getInfo")
+	 public @ResponseBody Integer getInfo() {
+		 	List<String> projectList = new ArrayList<>();
+		 	String projectQuery = "SELECT user_id, username FROM users";
+		 	String idQuery = "SELECT user_id FROM users WHERE email = '"+"vinhvu123@gmail.com"+"'";
+
+			//projectList.addAll(jdbcTemplate.queryForList(projectQuery, String.class));
+			
+			Integer userID = jdbcTemplate.queryForObject(idQuery, Integer.class);
+			return userID;
 		 	
 }
 }
