@@ -1,6 +1,7 @@
 package com.CS157Ateam5.server;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import java.util.ArrayList;
 
@@ -91,6 +92,8 @@ public class ProjectController {
 	
 	
 =======
+=======
+>>>>>>> c17a2e8... grab user_id for context
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,5 +123,4 @@ public class ProjectController {
 			return projectList;
 		 	
 }
->>>>>>> 28e01e1... display projects from database
 }

@@ -14,14 +14,13 @@ import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import ProjectPopup from '../popups/ProjectPopup';
 import { getProjects } from '../../actions/projects';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { UserContext } from '../../UserContext';
-=======
->>>>>>> 28e01e1... display projects from database
-=======
-import { UserContext } from '../../UserContext';
->>>>>>> 2dfac29... usercontext
+import { addProject } from '../../actions/projects';
+import { editProject } from '../../actions/projects';
+import { addProjectUPT } from '../../actions/projects';
+
+
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,27 +34,28 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
-  const [projects, setProjects] = useState([])
+  const [projects, setProjects] = useState([]);
+  const [projectName, setProjectName] = useState([""]);
 
+ 
   useEffect(()=>{
-    getProjects()
-      .then( res => res.map( name => ({name})))
+    const user_id = JSON.parse(localStorage.getItem('user_id'));
+    getProjects(user_id)
+      .then( res => res.map( obj => ({"key":obj.project_id, "name":obj.project_name})))
       .then( res => setProjects(res));
   }, [] )
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const {user,setUser} = useContext(UserContext)
-  console.log(user)
+  console.log(projects)
+  // const {user,setUser} = useContext(UserContext)
+  // console.log(user)
 
-  const testing = JSON.parse(localStorage.getItem('user_id'));
-  console.log("This is the user_id: ", testing)
-=======
->>>>>>> 28e01e1... display projects from database
-=======
-  const {user,setUser} = useContext(UserContext)
-  console.log(user)
->>>>>>> 2dfac29... usercontext
+  // const testing = JSON.parse(localStorage.getItem('user_id'));
+  // console.log("This is the user_id: ", testing)
+  // const testing2 = JSON.stringify(localStorage.getItem('userEmail'));
+  // console.log("This is the userEmail: ", testing2)
+  // const testing3 = JSON.stringify(localStorage.getItem('userUsername'));
+  // console.log("This is the userUsername: ", testing3)
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -70,6 +70,32 @@ const Home = () => {
   function nextPage(e) {
     history.push({ pathname: '/Storyboard', projectName: e });
   }
+
+  const projNameInput = (e) =>{
+  setProjectName(e.target.value)}
+  //setProjects({ ...projects, [e.target.name]: e.target.value });
+
+  const onSubmit = (e,title) => {
+    e.preventDefault()
+    if(title = ""){
+    const user_id = JSON.parse(localStorage.getItem('user_id'));
+     addProject(projectName)
+     .then(res => {});
+    console.log(projectName)
+    }
+  }
+
+  
+  const editSubmit = (e) => {
+    e.preventDefault()
+    const user_id = JSON.parse(localStorage.getItem('user_id'));
+     editProject(user_id,projectName)
+     .then(res => res)
+
+
+    console.log(projectName)
+  }
+  
 
   return (
     <div className={classes.root}>
@@ -134,6 +160,7 @@ const Home = () => {
                   );
                 })}
               </List>
+              <p>{projectName}</p>
               <IconButton
                 aria-label='Add'
                 color='primary'
@@ -153,6 +180,8 @@ const Home = () => {
               open={open}
               description={description}
               handleClose={handleClose}
+              onSubmit={onSubmit}
+              projNameInput={projNameInput}
             ></ProjectPopup>
           </motion.div>
         </Grid>
