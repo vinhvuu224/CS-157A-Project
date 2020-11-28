@@ -78,7 +78,7 @@ export const login = async (emailUsername, password, history, setUser) => {
       data.passwordError = res.data.passError;
       return data;
     } else {
-      setAuthHeader(res.data.token);
+      setAuthHeader(res.data.token, res.data.user_id);
       setUser({user_id: res.data.user_id});
       history.push('/Home');
     }
@@ -94,8 +94,9 @@ export const logout = (history, setUser) => async () => {
   history.push('/');
 };
 
-const setAuthHeader = (token) => {
+const setAuthHeader = (token, user_id) => {
   const Token = `${token}`;
   localStorage.setItem('token', Token);
+  localStorage.setItem('user_id', user_id);  
   axios.defaults.headers.common['Authorization'] = Token;
 };

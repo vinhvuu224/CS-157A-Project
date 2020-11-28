@@ -39,6 +39,9 @@ const Home = () => {
   const {user,setUser} = useContext(UserContext)
   console.log(user)
 
+  const testing = JSON.parse(localStorage.getItem('user_id'));
+  console.log("This is the user_id: ", testing)
+
   const handleClickOpen = () => {
     setOpen(true);
   };
