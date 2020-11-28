@@ -2,14 +2,12 @@ package com.CS157Ateam5.server;
 
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
-<<<<<<< HEAD
 
 import org.springframework.web.bind.annotation.*;
 
-=======
->>>>>>> e83faec... grab user_id for context
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
 public class ProjectController {
-<<<<<<< HEAD
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -90,33 +87,6 @@ public class ProjectController {
         new HaveIssueController(jdbcTemplate).deleteEntry(project_id, 0);
         return "Success";
     }
-=======
-	
-	@Autowired
-	JdbcTemplate jdbcTemplate;
 	
 	
-	 @CrossOrigin(origins = "http://localhost:8080")
-	 @GetMapping(value="/getProjects")
-	 public @ResponseBody List<String> getProjects() {
-		 	List<String> projectList = new ArrayList<>();
-		 	String projectQuery = "SELECT name FROM projects";
-			projectList.addAll(jdbcTemplate.queryForList(projectQuery, String.class));
-			return projectList;
-		 	
-}
-	 @CrossOrigin(origins = "http://localhost:8080")
-	 @GetMapping(value="/getInfo")
-	 public @ResponseBody Integer getInfo() {
-		 	List<String> projectList = new ArrayList<>();
-		 	String projectQuery = "SELECT user_id, username FROM users";
-		 	String idQuery = "SELECT user_id FROM users WHERE email = '"+"vinhvu123@gmail.com"+"'";
-
-			//projectList.addAll(jdbcTemplate.queryForList(projectQuery, String.class));
-			
-			Integer userID = jdbcTemplate.queryForObject(idQuery, Integer.class);
-			return userID;
-		 	
-}
->>>>>>> e83faec... grab user_id for context
 }
