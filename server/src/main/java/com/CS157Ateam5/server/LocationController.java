@@ -16,6 +16,10 @@ public class LocationController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public LocationController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @CrossOrigin
 
     /*

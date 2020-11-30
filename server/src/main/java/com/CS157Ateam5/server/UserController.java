@@ -42,7 +42,7 @@ public class UserController {
         return users;
     }
 
-    @PostMapping(value = "/")
+    @PostMapping(value = "/signup")
     public @ResponseBody
     String addNewEntry(@RequestBody Users user) {
         //RegistErrorChecker myObj = new RegistErrorChecker("","","");
@@ -70,6 +70,8 @@ public class UserController {
             BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
             String hashedPassword = passEncoder.encode(user.getPassword());
             jdbcTemplate.update("INSERT INTO users(email,password,username) values('" + user.getEmail() + "','" + hashedPassword + "','" + user.getUsername() + "')");
+            new LocationController(jdbcTemplate).addNewEntry(new Location(0, user.getUsername(), user.getCity(),
+                    user.getState(), user.getCountry(), user.getTimezone()));
             String token = jwt.generateToken(user.getEmail());
             return token;
         }
