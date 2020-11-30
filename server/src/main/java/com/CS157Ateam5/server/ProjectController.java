@@ -51,12 +51,16 @@ public class ProjectController {
     @PostMapping(value="/projects")
     public @ResponseBody String addNewEntry(@RequestBody Projects project) {
         List<UserDetails> list = new UserController(jdbcTemplate).getUser(project.getUsername());
+        long user_id = 0;
         for(UserDetails u: list) {
+            user_id = u.getUser_id();
             if(u.getProject_name().equals(project.getProject_name())) {
                 return "User cannot have 2 projects with same name";
             }
         }
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
+        long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
+        new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full");
         return "Successful";
     }
 

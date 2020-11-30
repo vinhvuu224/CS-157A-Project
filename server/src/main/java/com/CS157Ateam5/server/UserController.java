@@ -32,7 +32,8 @@ public class UserController {
         List<UserDetails> users = new ArrayList<>();
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(userNameQuery);
         for (Map row : rows) {
-            UserDetails user = new UserDetails((int) row.get("user_id"), (String) row.get("email"),
+            UserDetails user = new UserDetails((int) row.get("user_id"), (int) row.get("project_id"),
+                    (int) row.get("permission_id"), (int) row.get("location_id"), (String) row.get("email"),
                     (String) row.get("username"), (String) row.get("password"), (String) row.get("City"),
                     (String) row.get("State"), (String) row.get("Country"), (String) row.get("name"),
                     (String) row.get("time_zone"), (String) row.get("permission_level"));

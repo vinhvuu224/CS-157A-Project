@@ -14,7 +14,7 @@ API Usage guide:
 
 /projects- For accessing `projects` entity
 - GET: (username, project_name) Returns all tasks and issues associated with the project
-- POST: (project_name, username) - Body
+- POST: (project_name, username) - Body. Creates "Full" permission entry in userpermissionproject and permissions
 - PATCH: (project_id, project_name, username) (e.g. 1, "Bug Tracker", "Bug Watcher").
 - DELETE: (project_id) Deletes all corresponding relationships 
 
@@ -26,7 +26,7 @@ API Usage guide:
 
 - For accessing `users` entity
 /users
-- GET: Use (username) Returns user attributes, location, and projects of the user
+- GET: Use (username) Returns user attributes, location, and projects of the user. Includes project_ids, permission_ids and location_ids
 "/"
 - POST: (username, email , password, confirmPassword) - Body
 /login
@@ -34,7 +34,7 @@ API Usage guide:
 
 /userprojects- For accessing `haveuserpermissionproject` entity
 - GET: (user_id, project_id) Returns the permission_level for the user in that project
-- POST: (user_id, project_id, permission_id)
+- POST: (user_id, project_id, permission_level)
 - PATCH: (user_id, project_id, permission_id) (e.g. 1, 1, 2).
 - DELETE: (project_id, user_id (optional)) Deletes all corresponding project relationships or if user_id specified, 
                                            all project-user relationships 
