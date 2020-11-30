@@ -2,15 +2,26 @@ package com.CS157Ateam5.server;
 
 public class Tasks {
     private long task_id;
+    private long project_id;
     private String name;
     private String description;
     private String progress;
 
-    public Tasks(long task_id, String name, String description, String progress) {
+
+    public Tasks(long task_id, long project_id, String name, String description, String progress) {
         this.task_id = task_id;
+        this.project_id = project_id;
         this.name = name;
         this.description = description;
         this.progress = progress;
+    }
+
+    public long getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(long project_id) {
+        this.project_id = project_id;
     }
 
     public long getTask_id() {
