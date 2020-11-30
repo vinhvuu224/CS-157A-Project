@@ -45,8 +45,8 @@ export const register = async (
     } else if (res.data.emailError === 'Duplicate email.') {
       data.email = res.data.emailError;
       return data;
-    } else if (res.data.confirmedPasswordError === 'Password does not match.') {
-      data.confirmPassword = res.data.confirmedPasswordError;
+    } else if (res.data.confirmPasswordError === 'Password does not match.') {
+      data.confirmPassword = res.data.confirmPasswordError;
       return data;
     } else {
       setAuthHeader(res.data.token,res.data.user_id,res.data.email,res.data.username);
