@@ -37,7 +37,6 @@ const TaskPopup = (props) => {
       if (title === 'Adding Task') {
         console.log('works');
         const res = await addTask(1, name, description, progress);
-
         handleClose();
       }
     } catch (err) {
