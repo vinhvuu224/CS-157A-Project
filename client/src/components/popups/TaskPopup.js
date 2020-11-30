@@ -20,17 +20,16 @@ const TaskPopup = (props) => {
       minWidth: 120,
     },
   }));
-  const { title, description, open, handleClose, getAllTasks } = props;
+  const { title, description, open, handleClose, setState } = props;
   const classes = useStyles();
-  const [state, setState] = useState({
+  const [data, setData] = useState({
     id: '',
     name: '',
     task_description: '',
     progress: '',
   });
-  const { id, name, task_description, progress } = state;
-  const onChange = (e) =>
-    setState({ ...state, [e.target.name]: e.target.value });
+  const { id, name, task_description, progress } = data;
+  const onChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +37,7 @@ const TaskPopup = (props) => {
       if (title === 'Adding Task') {
         console.log('works');
         const res = await addTask(1, name, description, progress);
-        getAllTasks();
+
         handleClose();
       }
     } catch (err) {

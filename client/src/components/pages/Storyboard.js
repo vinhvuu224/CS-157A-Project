@@ -15,7 +15,8 @@ const Container = styled.div`
 const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
-  function getAllTasks() {
+
+  useEffect(() => {
     getTasks(1)
       .then((tasks) => {
         let newData = state;
@@ -46,9 +47,6 @@ const Storyboard = () => {
         });
         setState(x);
       });
-  }
-  useEffect(() => {
-    getAllTasks();
   }, []);
 
   //Persiting changes after dragging
@@ -125,7 +123,7 @@ const Storyboard = () => {
                   key={column.id}
                   column={column}
                   tasks={tasks}
-                  getAllTasks={getAllTasks}
+                  setState={setState}
                 />
               );
             })}

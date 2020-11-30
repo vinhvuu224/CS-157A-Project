@@ -18,20 +18,16 @@ export const getTasks = async (project_id) => {
   }
 };
 
-export const addTask = async (project_id, name, description, progress) => {
+export const addTask = async (project_id, name, task_description, progress) => {
+  const description = task_description;
+  const body = JSON.stringify({
+    project_id,
+    name,
+    description,
+    progress,
+  });
   try {
-    const res = await axios.post(
-      '/tasks',
-      {
-        params: {
-          project_id: project_id,
-          name: name,
-          description: description,
-          progress: progress,
-        },
-      },
-      config
-    );
+    const res = await axios.post('/tasks', body, config);
     return res;
   } catch (err) {
     console.log(err);
