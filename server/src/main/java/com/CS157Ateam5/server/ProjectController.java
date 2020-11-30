@@ -58,6 +58,9 @@ public class ProjectController {
                 return "User cannot have 2 projects with same name";
             }
         }
+        if(user_id == 0) {
+            return "User does not currently have project and/or location. Error should not be encountered";
+        }
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
         System.out.println(new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full"));
