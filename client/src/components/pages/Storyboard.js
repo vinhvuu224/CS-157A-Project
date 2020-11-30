@@ -6,14 +6,71 @@ import Column from '../storyboard/Column';
 import '@atlaskit/css-reset';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import { getTasks } from '../../actions/projects';
+
 
 const Container = styled.div`
   display: flex;
 `;
 
+// let initialData = {
+//   tasks: {},
+//   columns: {
+//     'column-1': {
+//       id: 'column-1',
+//       title: 'Planned',
+//       taskIds: [],
+//     },
+//     'column-2': {
+//       id: 'column-2',
+//       title: 'In Progress',
+//       taskIds: [],
+//     },
+//     'column-3': {
+//       id: 'column-3',
+//       title: 'Done',
+//       taskIds: [],
+//     },
+//   },
+//   columnOrder: ['column-1', 'column-2', 'column-3'],
+// };
+
+
 const Storyboard = () => {
+  
   const location = useLocation();
   const [state, setState] = useState(initialData);
+
+  //const [testState, setTestState] = useState();
+
+  // useEffect(() => {
+  //   setTestState(myData());
+  //   console.log(state);
+  // }, []);
+
+ 
+  useEffect(() => {
+    getTasks(1)
+      .then(tasks => tasks.map(task => ({
+        ...initialData,
+        tasks: {
+          ...initialData.tasks,
+          [task.task_id]: {
+            id: task.task_id,
+            name: task.name,
+            description: task.description,
+            progress: task.progress,
+          },
+        },
+      })))
+      .then(res => {
+        setState(res[0])
+      });
+  }, [])
+
+  console.log(state)
+
+
 
   //Persiting changes after dragging
   const onDragEnd = (result) => {
@@ -79,7 +136,7 @@ const Storyboard = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <h3 style={{ marginLeft: '1%' }}>{location.projectName}</h3>
         <Container>
-          {state.columnOrder.map((columnId) => {
+          {state && state.columnOrder && state.columnOrder.map((columnId) => {
             const column = state.columns[columnId];
             const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
             return <Column key={column.id} column={column} tasks={tasks} />;

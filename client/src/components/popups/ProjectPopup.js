@@ -25,6 +25,7 @@ const ProjectPopup = (props) => {
         {title === 'Deleting Project' ? (
           <></>
         ) : (
+          <div>
           <TextField
             autoFocus
             margin='dense'
@@ -33,12 +34,16 @@ const ProjectPopup = (props) => {
             fullWidth
             onChange={(e) => projNameInput(e)}
           />
+          <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
+          testing</Button>
+          </div>
         )}
       </DialogContent>
       <DialogActions>
         <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
           Confirm
         </Button>
+        
         <Button onClick={handleClose} color='primary'>
           Cancel
         </Button>
