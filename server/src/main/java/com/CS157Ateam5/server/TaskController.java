@@ -55,7 +55,8 @@ public class TaskController {
         String taskUpdateQuery = "UPDATE tasks SET " + param_name + " = '" + param_value + "' WHERE task_id=" + task_id + ";";
         jdbcTemplate.update(taskUpdateQuery);
         Map<String, Object> obj = jdbcTemplate.queryForMap("SELECT * FROM tasks WHERE task_id=" + task_id + ";");
-        Tasks temp = new Tasks(task_id, (long) obj.get("project_id"), (String) obj.get("name"),
+        long project_id = jdbcTemplate.queryForObject("SELECT project_id FROM havetasks WHERE task_id="+task_id+";", long.class);
+        Tasks temp = new Tasks(task_id, project_id, (String) obj.get("name"),
                 (String) obj.get("description"), (String) obj.get("progress"));
         return temp;
     }

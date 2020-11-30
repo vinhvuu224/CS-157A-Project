@@ -54,7 +54,8 @@ public class IssueController {
         String taskUpdateQuery = "UPDATE issues SET " + param_name + " = '" + param_value + "' WHERE issue_id=" + issue_id + ";";
         jdbcTemplate.update(taskUpdateQuery);
         Map<String, Object> obj = jdbcTemplate.queryForMap("SELECT * FROM issues WHERE issue_id=" + issue_id + ";");
-        Issues temp = new Issues(issue_id, (long) obj.get("project_id"), (String) obj.get("name"),
+        long project_id = jdbcTemplate.queryForObject("SELECT project_id FROM haveissues WHERE issue_id="+issue_id+";", long.class);
+        Issues temp = new Issues(issue_id, project_id, (String) obj.get("name"),
                 (String) obj.get("description"), (String) obj.get("priority_level"));
         return temp;
     }
