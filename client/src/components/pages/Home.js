@@ -17,8 +17,11 @@ import { getProjects } from '../../actions/projects';
 import { UserContext } from '../../UserContext';
 import { addProject } from '../../actions/projects';
 import { editProject } from '../../actions/projects';
+<<<<<<< HEAD
 import { addProjectUPT } from '../../actions/projects';
 
+=======
+>>>>>>> 175922d... adding projects now works
 
 
 
@@ -75,6 +78,7 @@ const Home = () => {
   setProjectName(e.target.value)}
   //setProjects({ ...projects, [e.target.name]: e.target.value });
 
+<<<<<<< HEAD
   const onSubmit = (e,title) => {
     e.preventDefault()
     if(title = ""){
@@ -83,6 +87,15 @@ const Home = () => {
      .then(res => {});
     console.log(projectName)
     }
+=======
+  const onSubmit = (e) => {
+    e.preventDefault()
+     addProject(projectName)
+     .then(res => res)
+
+
+    console.log(projectName)
+>>>>>>> 175922d... adding projects now works
   }
 
   

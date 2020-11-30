@@ -39,17 +39,17 @@ export const register = async (
   };
   try {
     const res = await axios.post('/signup', body, config);
-    if (res.data === 'Duplicate username.') {
-      data.username = res.data;
+    if (res.data.usernameError === 'Duplicate username.') {
+      data.username = res.data.usernameError;
       return data;
-    } else if (res.data === 'Duplicate email.') {
-      data.email = res.data;
+    } else if (res.data.emailError === 'Duplicate email.') {
+      data.email = res.data.emailError;
       return data;
-    } else if (res.data === 'Password does not match.') {
-      data.confirmPassword = res.data;
+    } else if (res.data.confirmedPasswordError === 'Password does not match.') {
+      data.confirmPassword = res.data.confirmedPasswordError;
       return data;
     } else {
-      setAuthHeader(res.data);
+      setAuthHeader(res.data.token,res.data.user_id,res.data.email,res.data.username);
       setUser(res.data);
       history.push('/Home');
     }
@@ -79,11 +79,16 @@ export const login = async (emailUsername, password, history, setUser) => {
       return data;
     } else {
 <<<<<<< HEAD
+<<<<<<< HEAD
       setAuthHeader(res.data.token, res.data.user_id);
 =======
       setAuthHeader(res.data.token);
 >>>>>>> 99400f8... grab user_id for context
       setUser({user_id: res.data.user_id});
+=======
+      setAuthHeader(res.data.token, res.data.user_id,res.data.email,res.data.username);
+      setUser(res.data);
+>>>>>>> 175922d... adding projects now works
       history.push('/Home');
     }
   } catch (err) {
@@ -94,13 +99,20 @@ export const login = async (emailUsername, password, history, setUser) => {
 export const logout = (history, setUser) => async () => {
   setUser(null);
   localStorage.removeItem('token');
+  localStorage.removeItem('user_id');
+  localStorage.removeItem('userUsername');
+  localStorage.removeItem('userEmail');
+
   delete axios.defaults.headers.common['Authorization'];
   history.push('/');
 };
 
-const setAuthHeader = (token, user_id) => {
+const setAuthHeader = (token, user_id, userEmail, userUsername) => {
   const Token = `${token}`;
   localStorage.setItem('token', Token);
-  localStorage.setItem('user_id', user_id);  
+  localStorage.setItem('user_id', user_id);
+  localStorage.setItem('userEmail', userEmail);  
+  localStorage.setItem('userUsername', userUsername);  
+  
   axios.defaults.headers.common['Authorization'] = Token;
 };
