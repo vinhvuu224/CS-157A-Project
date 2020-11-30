@@ -75,6 +75,7 @@ const Column = (props) => {
         )}
       </Droppable>
       <TaskPopup
+        getAllTasks={props.getAllTasks}
         title={title}
         open={open}
         description={description}

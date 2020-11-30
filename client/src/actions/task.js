@@ -8,21 +8,28 @@ const config = {
 export const getTasks = async (project_id) => {
   try {
     const res = await axios.get(
-      '/getTask',
+      '/tasks',
       { params: { project_id: project_id } },
       config
     );
-    return res;
+    return res.data;
   } catch (err) {
     console.log(err);
   }
 };
 
-export const addTask = async (name, description, progress) => {
+export const addTask = async (project_id, name, description, progress) => {
   try {
     const res = await axios.post(
-      '/addTask',
-      { params: { name: name, description: description, progress: progress } },
+      '/tasks',
+      {
+        params: {
+          project_id: project_id,
+          name: name,
+          description: description,
+          progress: progress,
+        },
+      },
       config
     );
     return res;
@@ -34,7 +41,7 @@ export const addTask = async (name, description, progress) => {
 export const deleteTask = async (task_id) => {
   try {
     const res = await axios.delete(
-      '/deleteTask',
+      '/tasks',
       { params: { task_id: task_id } },
       config
     );
@@ -46,12 +53,12 @@ export const deleteTask = async (task_id) => {
 
 export const editTask = async (task_id, name, description, progress) => {
   try {
-    const res = await axios.post(
-      '/editTask',
+    const res = await axios.patch(
+      '/tasks',
       {
         params: {
           task_id: task_id,
-          name: name,
+          param_name: name,
           description: description,
           progress: progress,
         },

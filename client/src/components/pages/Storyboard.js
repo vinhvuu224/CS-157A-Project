@@ -6,6 +6,7 @@ import Column from '../storyboard/Column';
 import '@atlaskit/css-reset';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import { getTasks } from '../../actions/task';
 
 const Container = styled.div`
   display: flex;
@@ -14,6 +15,41 @@ const Container = styled.div`
 const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
+  function getAllTasks() {
+    getTasks(1)
+      .then((tasks) => {
+        let newData = state;
+        tasks.map((task) => {
+          newData = {
+            ...newData,
+            tasks: {
+              ...newData.tasks,
+              [task.task_id]: {
+                id: task.task_id,
+                name: task.name,
+                description: task.description,
+                progress: task.progress,
+              },
+            },
+          };
+        });
+        return newData;
+      })
+      .then((res) => {
+        let x = res;
+        Object.values(x.tasks).map((task) => {
+          Object.values(x.columns).map((col) => {
+            if (task.progress === col.title) {
+              col.taskIds.push(task.id);
+            }
+          });
+        });
+        setState(x);
+      });
+  }
+  useEffect(() => {
+    getAllTasks();
+  }, []);
 
   //Persiting changes after dragging
   const onDragEnd = (result) => {
@@ -79,11 +115,20 @@ const Storyboard = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <h3 style={{ marginLeft: '1%' }}>{location.projectName}</h3>
         <Container>
-          {state.columnOrder.map((columnId) => {
-            const column = state.columns[columnId];
-            const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
-            return <Column key={column.id} column={column} tasks={tasks} />;
-          })}
+          {state &&
+            state.columnOrder &&
+            state.columnOrder.map((columnId) => {
+              const column = state.columns[columnId];
+              const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+              return (
+                <Column
+                  key={column.id}
+                  column={column}
+                  tasks={tasks}
+                  getAllTasks={getAllTasks}
+                />
+              );
+            })}
         </Container>
       </DragDropContext>
     </motion.div>
