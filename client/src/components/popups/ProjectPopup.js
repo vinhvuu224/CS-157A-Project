@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
 const ProjectPopup = (props) => {
-  const { title, description, open, handleClose, onSubmit, projNameInput } = props;
+  const { title, description, open, handleClose, onSubmit, grabUserInput } = props;
 
   return (
     
@@ -25,18 +25,15 @@ const ProjectPopup = (props) => {
         {title === 'Deleting Project' ? (
           <></>
         ) : (
-          <div>
+          
           <TextField
             autoFocus
             margin='dense'
             id='name'
             label='Project name'
             fullWidth
-            onChange={(e) => projNameInput(e)}
+            onChange={(e) => grabUserInput(e)}
           />
-          <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
-          testing</Button>
-          </div>
         )}
       </DialogContent>
       <DialogActions>

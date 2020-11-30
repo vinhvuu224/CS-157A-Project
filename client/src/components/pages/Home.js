@@ -18,7 +18,6 @@ import { UserContext } from '../../UserContext';
 import { addProject } from '../../actions/projects';
 import { editProject } from '../../actions/projects';
 import { addProjectUPT } from '../../actions/projects';
-import { addProjectUPT } from '../../actions/projects';
 
 
 
@@ -35,7 +34,13 @@ const Home = () => {
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
   const [projects, setProjects] = useState([]);
-  const [projectName, setProjectName] = useState([""]);
+  //const [projectName, setProjectName] = useState([""]);
+  const [userInput, setUserInput] = useState("");
+  const [projectKey, setProjectKey] = useState(0);
+  const [buttonTitle, setButtonTitle] = useState("");
+
+
+
 
  
   useEffect(()=>{
@@ -45,7 +50,9 @@ const Home = () => {
       .then( res => setProjects(res));
   }, [] )
 
-  console.log(projects)
+  
+
+
   // const {user,setUser} = useContext(UserContext)
   // console.log(user)
 
@@ -61,6 +68,20 @@ const Home = () => {
     setOpen(true);
   };
 
+  const onClickDeleteButton = (projectKey) => {
+    setProjectKey(projectKey)
+  };
+
+  const onClickEditButton = (title) => {
+    setButtonTitle(title)
+    
+  };
+
+  const onClickAddButton = (title) => {
+    setButtonTitle(title)
+    console.log(title)
+  };
+
 
   const handleClose = () => {
     setOpen(false);
@@ -68,35 +89,44 @@ const Home = () => {
   const classes = useStyles();
   let history = useHistory();
   function nextPage(e) {
-    history.push({ pathname: '/Storyboard', projectName: e });
+  history.push({ pathname: '/Storyboard', projectName: e });
   }
 
-  const projNameInput = (e) =>{
-  setProjectName(e.target.value)}
+  const grabUserInput = (e) =>{
+  setUserInput(e.target.value)
+}
   //setProjects({ ...projects, [e.target.name]: e.target.value });
 
-  const onSubmit = (e,title) => {
+
+
+  const onSubmit = (e) => {
     e.preventDefault()
-    if(title = ""){
-    const user_id = JSON.parse(localStorage.getItem('user_id'));
-     addProject(projectName)
-     .then(res => {});
-    console.log(projectName)
+    if(buttonTitle === 'Add'){
+      const username = JSON.stringify(localStorage.getItem('userUsername')); 
+     addProject(userInput,username)
+     .then(res => res);
+    
+    }
+    else if(buttonTitle === 'Edit'){
+      const username = JSON.stringify(localStorage.getItem('userUsername'));
+      editProject(projectKey,userInput,username)
+        const items = projects
+        items.map(item=>{
+          if(item.key === projectKey){
+            item.name = userInput
+          }
+          
+        })
+        setProjects(items)
+    }
+    else{
+      console.log("hello")
     }
   }
-
   
-  const editSubmit = (e) => {
-    e.preventDefault()
-    const user_id = JSON.parse(localStorage.getItem('user_id'));
-     editProject(user_id,projectName)
-     .then(res => res)
-
-
-    console.log(projectName)
-  }
   
 
+  
   return (
     <div className={classes.root}>
       <Grid container spacing={2} direction='column'>
@@ -129,6 +159,7 @@ const Home = () => {
                           />
                         </ListItem>
                         <IconButton
+                           
                           aria-label='Edit'
                           color='primary'
                           onClick={(e) => {
@@ -138,7 +169,7 @@ const Home = () => {
                             handleClickOpen();
                           }}
                         >
-                          <CreateIcon />
+                        <CreateIcon onClick={() =>{onClickDeleteButton(project.key);onClickEditButton("Edit")}} />
                         </IconButton>
                         <IconButton
                           aria-label='Add'
@@ -152,7 +183,7 @@ const Home = () => {
                             handleClickOpen();
                           }}
                         >
-                          <DeleteIcon />
+                          <DeleteIcon onClick={() =>{onClickDeleteButton(project.key)}} />
                         </IconButton>
                       </ListItem>
                       <Divider />
@@ -160,7 +191,7 @@ const Home = () => {
                   );
                 })}
               </List>
-              <p>{projectName}</p>
+              <p>{userInput}</p>
               <IconButton
                 aria-label='Add'
                 color='primary'
@@ -172,7 +203,7 @@ const Home = () => {
                   handleClickOpen();
                 }}
               >
-                <AddIcon />
+                <AddIcon onClick={()=>{onClickAddButton("Add")}} />
               </IconButton>
             </Paper>
             <ProjectPopup
@@ -181,7 +212,7 @@ const Home = () => {
               description={description}
               handleClose={handleClose}
               onSubmit={onSubmit}
-              projNameInput={projNameInput}
+              grabUserInput={grabUserInput}
             ></ProjectPopup>
           </motion.div>
         </Grid>

@@ -78,17 +78,11 @@ export const login = async (emailUsername, password, history, setUser) => {
       data.passwordError = res.data.passError;
       return data;
     } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
       setAuthHeader(res.data.token, res.data.user_id);
-=======
       setAuthHeader(res.data.token);
->>>>>>> 99400f8... grab user_id for context
-      setUser({user_id: res.data.user_id});
-=======
       setAuthHeader(res.data.token, res.data.user_id,res.data.email,res.data.username);
       setUser(res.data);
->>>>>>> 175922d... adding projects now works
       history.push('/Home');
     }
   } catch (err) {

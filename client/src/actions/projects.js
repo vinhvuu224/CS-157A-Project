@@ -45,32 +45,19 @@ export const getTasks = async (project_id) =>{
 //       return err.response.data;
 //     }
 // };
-export const addProject = async (projectName) =>{
+export const addProject = async (project_name,username) =>{
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  const body = JSON.stringify({
+    project_name,
+    username
+  });
   //JSON.stringify(projectName)
   try{
-  const res = await axios.post('/addProject',null,{
-    params: {
-      project_name: projectName
-    }
-  });
-  return res.data
-  }
-  catch (err) {
-      console.log(err);
-      return err.response.data;
-    }
-};
-
-export const addProjectUPT = async (user_id,project_id,permission_id) =>{
-  //JSON.stringify(projectName)
-  try{
-  const res = await axios.post('/userprojects',null,{
-    params: {
-      user_id: user_id,
-      project_id: project_id,
-      permission_id: permission_id
-    }
-  });
+  const res = await axios.post('/projects',body,config)
   return res.data
   }
   catch (err) {
@@ -80,19 +67,16 @@ export const addProjectUPT = async (user_id,project_id,permission_id) =>{
 };
 
 export const editProject = async (project_id,projectName,username) =>{
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-  const body = JSON.stringify({
-    project_id,
-    projectName,
-    username
-  })
+  
   //JSON.stringify(projectName)
   try{
-  const res = await axios.post('/addProject',body,config)
+  const res = await axios.patch('/projects',null,{
+    params: {
+      project_id: project_id,
+      project_name: projectName,
+      username: username
+    }
+  })
   return res.data
   }
   catch (err) {
