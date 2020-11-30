@@ -124,6 +124,7 @@ const Storyboard = () => {
                   column={column}
                   tasks={tasks}
                   setState={setState}
+                  state={state}
                 />
               );
             })}

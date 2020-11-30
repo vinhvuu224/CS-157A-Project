@@ -4,7 +4,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import { addTask } from '../../actions/task';
+import { addTask, deleteTask, editTask } from '../../actions/task';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -20,7 +20,15 @@ const TaskPopup = (props) => {
       minWidth: 120,
     },
   }));
-  const { title, description, open, handleClose, setState } = props;
+  const {
+    task,
+    title,
+    description,
+    open,
+    handleClose,
+    setState,
+    state,
+  } = props;
   const classes = useStyles();
   const [data, setData] = useState({
     id: '',
@@ -35,8 +43,97 @@ const TaskPopup = (props) => {
     e.preventDefault();
     try {
       if (title === 'Adding Task') {
-        console.log('works');
-        const res = await addTask(1, name, description, progress);
+        const res = await addTask(1, name, task_description, progress);
+        let column = '';
+        if (res.data.progress === 'Planned') {
+          column = 'column-1';
+        } else if (res.data.progress === 'In Progress') {
+          column = 'column-2';
+        } else if (res.data.progress === 'Done') {
+          column = 'column-3';
+        }
+        const start = state.columns[column];
+        const newTaskIds = Array.from(start.taskIds);
+        newTaskIds.push(res.data.task_id);
+        const newColumn = {
+          ...start,
+          taskIds: newTaskIds,
+        };
+
+        setState((state) => ({
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [res.data.task_id]: {
+              id: res.data.task_id,
+              name: res.data.name,
+              description: res.data.description,
+              progress: res.data.progress,
+            },
+          },
+          columns: {
+            ...state.columns,
+            [newColumn.id]: newColumn,
+          },
+        }));
+      } else if (title === 'Deleting Task') {
+        const res = await deleteTask(task.id);
+        if (res.data === 'Success') {
+          let newState = state;
+          delete newState.tasks[task.id];
+          let column = '';
+          if (task.progress === 'Planned') {
+            column = 'column-1';
+          } else if (task.progress === 'In Progress') {
+            column = 'column-2';
+          } else if (task.progress === 'Done') {
+            column = 'column-3';
+          }
+          newState.columns[column].taskIds.shift(task.id);
+
+          let newTasks = newState.tasks;
+          let newColumns = newState.columns;
+          console.log(newState);
+          setState((state) => ({
+            ...state,
+            tasks: newTasks,
+            columns: newColumns,
+          }));
+        } else if (title === 'Editing Task') {
+          const res = await editTask(task.id);
+          let column = '';
+          if (res.data.progress === 'Planned') {
+            column = 'column-1';
+          } else if (res.data.progress === 'In Progress') {
+            column = 'column-2';
+          } else if (res.data.progress === 'Done') {
+            column = 'column-3';
+          }
+          const start = state.columns[column];
+          const newTaskIds = Array.from(start.taskIds);
+          newTaskIds.push(res.data.task_id);
+          const newColumn = {
+            ...start,
+            taskIds: newTaskIds,
+          };
+
+          setState((state) => ({
+            ...state,
+            tasks: {
+              ...state.tasks,
+              [res.data.task_id]: {
+                id: res.data.task_id,
+                name: res.data.name,
+                description: res.data.description,
+                progress: res.data.progress,
+              },
+            },
+            columns: {
+              ...state.columns,
+              [newColumn.id]: newColumn,
+            },
+          }));
+        }
         handleClose();
       }
     } catch (err) {

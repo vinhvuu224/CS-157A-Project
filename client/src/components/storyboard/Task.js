@@ -44,11 +44,12 @@ const Task = (props) => {
             <CreateIcon />
           </IconButton>
           <IconButton
-            aria-label='Add'
+            aria-label='Delete'
             color='secondary'
             onClick={(e) => {
               e.preventDefault();
               props.setTitle('Deleting Task');
+              props.setTask(props.task);
               props.setDescription(
                 'Are you sure you want to delete your task?'
               );
