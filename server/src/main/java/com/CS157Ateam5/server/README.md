@@ -2,7 +2,7 @@ API Usage guide:
 
 /location - For accessing `location` entity
 - GET: Returns all locations
-- POST: (city, state, country, time_zone) - Body
+- POST: (city, state, country, time_zone, username) - Body. Updates 'In' table
 - PATCH: (location_id, param_name, param_value) (e.g. 1, "state" "California").
 - DELETE: (location_id)
 
