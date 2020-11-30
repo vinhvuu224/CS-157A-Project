@@ -38,8 +38,8 @@ public class UserProjectPermissionController {
 
     @PostMapping(value = "/userprojects")
     public @ResponseBody
-    String addNewEntry(@RequestParam String user_id, @RequestParam long project_id,
-                       @RequestParam long permission_id) {
+    String addNewEntry(@RequestParam long user_id, @RequestParam long project_id,
+                       @RequestParam String permission_level) {
 
         String existingQuery = "SELECT user_id FROM haveuserpermissionproject WHERE user_id=" + user_id + " AND project_id="
                 + project_id + ";";
@@ -48,6 +48,8 @@ public class UserProjectPermissionController {
             jdbcTemplate.queryForObject(existingQuery, long.class);
             return "Existing user project permission relationship";
         } catch (Exception e) {
+            new PermissionController(jdbcTemplate).addNewEntry(new Permissions(0, permission_level));
+            long permission_id = jdbcTemplate.queryForObject("SELECT MAX(permission_id) from permissions;", long.class);
             String projectUserQuery = "INSERT INTO haveuserpermissionproject(user_id, project_id, permission_id)" +
                     " VALUES(" + user_id + ", " + project_id + ", " +
                     permission_id + ");";
@@ -81,7 +83,7 @@ public class UserProjectPermissionController {
         }
         jdbcTemplate.update(userProjectDeleteQuery);
         List<Long> list = jdbcTemplate.queryForList(permissionDeleteQuery, long.class);
-        for(long permission_id: list) new PermissionController().deleteEntry(permission_id);
+        for(long permission_id: list) new PermissionController(jdbcTemplate).deleteEntry(permission_id);
         return "Success";
     }
 }

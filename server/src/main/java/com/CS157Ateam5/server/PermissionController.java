@@ -16,6 +16,10 @@ public class PermissionController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    public PermissionController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @CrossOrigin
     @GetMapping(value = "/permissions")
     public @ResponseBody

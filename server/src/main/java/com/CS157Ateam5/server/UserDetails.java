@@ -3,6 +3,9 @@ package com.CS157Ateam5.server;
 public class UserDetails {
 
     private long user_id;
+    private long project_id;
+    private long permission_id;
+    private long location_id;
     private String email;
     private String username;
     private String password;
@@ -10,10 +13,15 @@ public class UserDetails {
     private String state;
     private String country;
     private String project_name;
+    private String permission_level;
 
-    public UserDetails(long user_id, String email, String username, String password, String city, String state,
-                       String country, String project_name, String time_zone, String permission_level) {
+    public UserDetails(long user_id, long project_id, long permission_id, long location_id, String email,
+                       String username, String password, String city, String state, String country, String project_name,
+                       String time_zone, String permission_level) {
         this.user_id = user_id;
+        this.project_id = project_id;
+        this.permission_id = permission_id;
+        this.location_id = location_id;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -24,6 +32,31 @@ public class UserDetails {
         this.time_zone = time_zone;
         this.permission_level = permission_level;
     }
+
+    public long getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(long project_id) {
+        this.project_id = project_id;
+    }
+
+    public long getPermission_id() {
+        return permission_id;
+    }
+
+    public void setPermission_id(long permission_id) {
+        this.permission_id = permission_id;
+    }
+
+    public long getLocation_id() {
+        return location_id;
+    }
+
+    public void setLocation_id(long location_id) {
+        this.location_id = location_id;
+    }
+
 
     @Override
     public String toString() {
@@ -49,19 +82,6 @@ public class UserDetails {
         this.project_name = project_name;
     }
 
-    public UserDetails(long user_id, String email, String username, String password, String city, String state,
-                       String country, String time_zone, String permission_level) {
-        this.user_id = user_id;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.time_zone = time_zone;
-        this.permission_level = permission_level;
-    }
-
     public String getPermission_level() {
         return permission_level;
     }
@@ -70,20 +90,6 @@ public class UserDetails {
         this.permission_level = permission_level;
     }
     private String time_zone;
-
-    String permission_level;
-
-    public UserDetails(long user_id, String email, String username, String password, String city, String state,
-                       String country, String time_zone) {
-        this.user_id = user_id;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.time_zone = time_zone;
-    }
 
     public long getUser_id() {
         return user_id;

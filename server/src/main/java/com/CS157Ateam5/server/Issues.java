@@ -2,14 +2,33 @@ package com.CS157Ateam5.server;
 
 public class Issues {
     private long issue_id;
+    private long project_id;
     private String name;
     private String description;
     private String priority_level;
 
-    public Issues(long issue_id, String name, String description, String priority_level) {
+
+    public Issues(long issue_id, long project_id, String name, String description, String priority_level) {
         this.issue_id = issue_id;
+        this.project_id = project_id;
         this.name = name;
         this.description = description;
+        this.priority_level = priority_level;
+    }
+
+    public long getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(long project_id) {
+        this.project_id = project_id;
+    }
+
+    public String getPriority_level() {
+        return priority_level;
+    }
+
+    public void setPriority_level(String priority_level) {
         this.priority_level = priority_level;
     }
 
