@@ -28,8 +28,8 @@ public class LocationController {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(locationQuery);
         List<Location> list = new ArrayList<>();
         for (Map row : rows) {
-            Location loc = new Location((int) row.get("location_id"), (String) row.get("city"), (String) row.get("state"),
-                    (String) row.get("country"), (String) row.get("time_zone"));
+            Location loc = new Location((int) row.get("location_id"), "all users", (String) row.get("city"),
+                    (String) row.get("state"), (String) row.get("country"), (String) row.get("time_zone"));
             list.add(loc);
         }
         return list;
@@ -47,6 +47,10 @@ public class LocationController {
         catch(Exception e) {
             jdbcTemplate.update("INSERT INTO location(City, State, Country, time_zone) values('" + location.getCity() + "'" +
                     ", '" + location.getState() + "', '" + location.getCountry() + "', '" + location.getTime_zone() + "')");
+            long location_id = jdbcTemplate.queryForObject("SELECT MAX(location_id) from location", long.class);
+            long user_id = jdbcTemplate.queryForObject("SELECT user_id from users where username='"+location.getUsername()+"';",
+                    long.class);
+            new InController(jdbcTemplate).addNewEntry(user_id, location_id);
         }
         return "Successful";
     }

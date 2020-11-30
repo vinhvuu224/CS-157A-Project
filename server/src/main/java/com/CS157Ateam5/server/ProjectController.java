@@ -56,7 +56,10 @@ public class ProjectController {
                 return "User cannot have 2 projects with same name";
             }
         }
+        long user_id = jdbcTemplate.queryForObject("SELECT user_id FROM users WHERE username='"+project.getUsername()+"';", long.class);
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
+        long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
+        System.out.println(new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full"));
         return "Successful";
     }
 
