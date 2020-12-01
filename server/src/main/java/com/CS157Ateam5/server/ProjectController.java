@@ -34,7 +34,7 @@ public class ProjectController {
 
 
     @PostMapping(value="/projects")
-    public @ResponseBody String addNewEntry(@RequestBody Projects project) {
+    public @ResponseBody Object addNewEntry(@RequestBody Projects project) {
         List<UserDetails> list = new UserController(jdbcTemplate).getUser(project.getUsername());
         for(UserDetails u: list) {
             if(u.getProject_name().equals(project.getProject_name())) {
@@ -45,9 +45,9 @@ public class ProjectController {
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
         System.out.println(new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full"));
-        return "Successful";
+        project.setProject_id(project_id);
+        return project; 	
     }
-
     @PatchMapping(value="/projects")
     public @ResponseBody String updateEntry(@RequestParam long project_id, @RequestParam String project_name,
                                             @RequestParam String username) {

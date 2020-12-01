@@ -19,18 +19,30 @@ public class IssueController {
     @CrossOrigin
     @GetMapping(value = "/issues")
     public @ResponseBody
-    Object getIssues(@RequestParam long project_id) {
-        String query = "select issues.issue_id, issues.name, issues.description, issues.priority_level from issues " +
-                "join haveissues using (issue_id) join projects using (project_id)" + " where project_id=" + project_id + ";";
+    Object getIssues(@RequestParam(required = false, defaultValue = "0") long project_id,
+                     @RequestParam(required = false, defaultValue = "0") long issue_id) {
 
-        List<Issues> issues = new ArrayList<>();
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
-        for (Map row : rows) {
-            Issues issue = new Issues((int) row.get("issue_id"), project_id, (String) row.get("name"),
-                    (String) row.get("description"), (String) row.get("priority_level"));
-            issues.add(issue);
+        if(project_id != 0) {
+            String query = "select issues.issue_id, issues.name, issues.description, issues.priority_level from issues " +
+                    "join haveissues using (issue_id) join projects using (project_id)" + " where project_id=" + project_id + ";";
+
+            List<Issues> issues = new ArrayList<>();
+            List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
+            for (Map row : rows) {
+                Issues issue = new Issues((int) row.get("issue_id"), project_id, (String) row.get("name"),
+                        (String) row.get("description"), (String) row.get("priority_level"));
+                issues.add(issue);
+            }
+            return issues;
         }
-        return issues;
+        else {
+            String query = "select * from issues where issue_id="+issue_id+";";
+            Map<String, Object> map = jdbcTemplate.queryForMap(query);
+            project_id = jdbcTemplate.queryForObject("SELECT project_id FROM haveissues WHERE issue_id="+issue_id+";",
+                    long.class);
+            return new Issues(issue_id, project_id, (String) map.get("name"), (String) map.get("description"),
+                    (String) map.get("priority_level"));
+        }
     }
 
     @PostMapping(value = "/issues")
