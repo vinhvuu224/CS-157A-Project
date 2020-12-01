@@ -74,7 +74,6 @@ const Storyboard = () => {
         if (typeof newTaskId === 'string') {
           let newTaskId2 = parseInt(newTaskId);
           newTaskIds[newTaskIds.indexOf(newTaskId)] = newTaskId2;
-          //newTaskIds.push(newTaskId2);
         }
       });
       const newColumn = {
@@ -88,7 +87,6 @@ const Storyboard = () => {
           [newColumn.id]: newColumn,
         },
       };
-      console.log(newState);
       setState(newState);
       return;
     }
@@ -133,7 +131,6 @@ const Storyboard = () => {
     } else if (newFinish.id === 'column-3') {
       progress = 'Done';
     }
-    console.log(newState);
     setState(newState);
     await editTask(task_id, name, description, progress);
   };
