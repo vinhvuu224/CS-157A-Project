@@ -53,6 +53,8 @@ public class IssueController {
         long issue_id = jdbcTemplate.queryForObject("SELECT MAX(issue_id) from issues", long.class);
         new HaveTaskController(jdbcTemplate).addNewEntry(issue.getProject_id(), issue_id);
         issue.setIssue_id(issue_id);
+        jdbcTemplate.update("INSERT INTO haveissues(project_id, issue_id) values('" + issue.getProject_id() + "', '"
+                + issue.getIssue_id() + "');");
         return issue;
     }
 

@@ -6,9 +6,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import { Chip } from '@material-ui/core';
+
 
 const ProjectPopup = (props) => {
-  const { title, description, open, handleClose, onSubmit, grabUserInput,userInput } = props;
+  const { title, description, open, handleClose, onSubmit, grabUserInput,userInput, chipData, handleDelete } = props;
 
   return (
     
@@ -36,8 +39,29 @@ const ProjectPopup = (props) => {
             fullWidth
             onChange={(e) => grabUserInput(e)}
           />
-        )}
+        )
+        
+
+        
+        }
       </DialogContent>
+      <Paper component="ul" >
+      {chipData.map((data) => {
+        let icon;
+
+        
+
+        return (
+          <li key={data.key}>
+            <Chip
+              icon={icon}
+              label={data.label}
+              onDelete={data.label === 'React' ? undefined : handleDelete(data)}
+            />
+          </li>
+        );
+      })}
+    </Paper>
       <DialogActions>
         <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
           Confirm
