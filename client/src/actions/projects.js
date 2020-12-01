@@ -21,7 +21,6 @@ export const getTasks = async (project_id) =>{
       project_id: project_id
     }
   });
-  console.log("hi my name is vinh: ", res.data)
   return res.data;
   }
   catch (err) {
@@ -31,20 +30,6 @@ export const getTasks = async (project_id) =>{
 };
 
 
-// export const getProjectID = async (projectName) =>{
-//   try{
-//   const res = await axios.get('/getProjects',null,{
-//     params: {
-//       projectName: projectName
-//     }
-//   });
-//   return res.data
-//   }
-//   catch (err) {
-//       console.log(err);
-//       return err.response.data;
-//     }
-// };
 export const addProject = async (project_name,username) =>{
   const config = {
     headers: {
@@ -57,6 +42,7 @@ export const addProject = async (project_name,username) =>{
   });
   //JSON.stringify(projectName)
   try{
+  console.log(body);
   const res = await axios.post('/projects',body,config)
   return res.data
   }
@@ -65,6 +51,23 @@ export const addProject = async (project_name,username) =>{
       return err.response.data;
     }
 };
+
+export const deleteProject = async (project_id) =>{
+    
+ 
+   try{
+  const res = await axios.delete('/projects',{
+      params: {
+        project_id: project_id
+      }
+    })
+    return res.data
+    }
+    catch (err) {
+        console.log(err);
+        return err.response.data;
+      }
+   };
 
 export const editProject = async (project_id,projectName,username) =>{
   

@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
 const ProjectPopup = (props) => {
-  const { title, description, open, handleClose, onSubmit, grabUserInput } = props;
+  const { title, description, open, handleClose, onSubmit, grabUserInput,userInput } = props;
 
   return (
     
@@ -31,6 +31,8 @@ const ProjectPopup = (props) => {
             margin='dense'
             id='name'
             label='Project name'
+            name = "userInput"
+            value = {userInput}
             fullWidth
             onChange={(e) => grabUserInput(e)}
           />

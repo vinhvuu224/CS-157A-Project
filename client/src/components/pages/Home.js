@@ -17,7 +17,9 @@ import { getProjects } from '../../actions/projects';
 import { UserContext } from '../../UserContext';
 import { addProject } from '../../actions/projects';
 import { editProject } from '../../actions/projects';
-import { addProjectUPT } from '../../actions/projects';
+import { deleteProject } from '../../actions/projects';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import TaskPopup from '../popups/TaskPopup';
 
 
 
@@ -50,11 +52,7 @@ const Home = () => {
       .then( res => setProjects(res));
   }, [] )
 
-  
 
-
-  // const {user,setUser} = useContext(UserContext)
-  // console.log(user)
 
   // const testing = JSON.parse(localStorage.getItem('user_id'));
   // console.log("This is the user_id: ", testing)
@@ -89,7 +87,7 @@ const Home = () => {
   const classes = useStyles();
   let history = useHistory();
   function nextPage(e) {
-  history.push({ pathname: '/Storyboard', projectName: e });
+  history.push({ pathname: '/Storyboard', projectName: e});
   }
 
   const grabUserInput = (e) =>{
@@ -99,16 +97,21 @@ const Home = () => {
 
 
 
-  const onSubmit = (e) => {
+  const  onSubmit = async (e) => {
     e.preventDefault()
     if(buttonTitle === 'Add'){
-      const username = JSON.stringify(localStorage.getItem('userUsername')); 
-     addProject(userInput,username)
-     .then(res => res);
-    
+     const username = localStorage.getItem('userUsername');
+     const res = await addProject(userInput,username)
+     const newProject = {key: res.project_id, name: res.project_name}
+     const listOfProjects = projects; 
+     listOfProjects.push(newProject)
+     setProjects([...listOfProjects])
+       //setProjects(...projects)
+     
     }
     else if(buttonTitle === 'Edit'){
       const username = JSON.stringify(localStorage.getItem('userUsername'));
+      console.log(projectKey,userInput,username)
       editProject(projectKey,userInput,username)
         const items = projects
         items.map(item=>{
@@ -117,16 +120,17 @@ const Home = () => {
           }
           
         })
-        setProjects(items)
+        setProjects([...items])
     }
     else{
-      console.log("hello")
+      deleteProject(projectKey)
+      const filteredItems = projects.filter(item =>
+      item.key !== projectKey
+      );
+      setProjects([...filteredItems])
     }
   }
-  
-  
 
-  
   return (
     <div className={classes.root}>
       <Grid container spacing={2} direction='column'>
@@ -137,8 +141,26 @@ const Home = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
+            
             <Paper elevation={3}>
-              <h3 style={{ marginLeft: '20%' }}>Your Projects</h3>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+              <h3 >Your Projects</h3>
+              <IconButton 
+                
+                aria-label='Add'
+                color='primary'
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTitle('Adding Project');
+                  setDescription('Please name your project here.');
+                  handleClickOpen();
+                  
+                }}
+              >
+                <AddIcon onClick={()=>{onClickAddButton("Add")}} />
+                
+             </IconButton>
+             </div>
               <Divider />
               <List style={{ overflowY: 'auto', height: '500px' }}>
                 {projects.map((project) => {
@@ -150,7 +172,7 @@ const Home = () => {
                           button
                           onClick={(e) => {
                             e.preventDefault();
-                            nextPage(project.name);
+                            nextPage({projectname : project.name,projectkey : project.key});
                           }}
                         >
                           <ListItemText
@@ -169,7 +191,7 @@ const Home = () => {
                             handleClickOpen();
                           }}
                         >
-                        <CreateIcon onClick={() =>{onClickDeleteButton(project.key);onClickEditButton("Edit")}} />
+                        <CreateIcon onClick={() =>{onClickDeleteButton(project.key);onClickEditButton('Edit')}} />
                         </IconButton>
                         <IconButton
                           aria-label='Add'
@@ -183,7 +205,23 @@ const Home = () => {
                             handleClickOpen();
                           }}
                         >
-                          <DeleteIcon onClick={() =>{onClickDeleteButton(project.key)}} />
+                          <DeleteIcon onClick={() =>{onClickDeleteButton(project.key);onClickAddButton("Delete")}} />
+                          
+                        </IconButton>
+                        <IconButton
+                          aria-label='Add'
+                          color='primary'
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setTitle('Collaborate With Other Users');
+                            setDescription(
+                              'Please enter a username/email.'
+                            );
+                            handleClickOpen();
+                          }}
+                        >
+                          <GroupAddIcon onClick={() =>{onClickDeleteButton(project.key)}} />
+                          
                         </IconButton>
                       </ListItem>
                       <Divider />
@@ -191,20 +229,6 @@ const Home = () => {
                   );
                 })}
               </List>
-              <p>{userInput}</p>
-              <IconButton
-                aria-label='Add'
-                color='primary'
-                style={{ marginLeft: '40%' }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setTitle('Adding Project');
-                  setDescription('Please name your project here.');
-                  handleClickOpen();
-                }}
-              >
-                <AddIcon onClick={()=>{onClickAddButton("Add")}} />
-              </IconButton>
             </Paper>
             <ProjectPopup
               title={title}
@@ -213,6 +237,7 @@ const Home = () => {
               handleClose={handleClose}
               onSubmit={onSubmit}
               grabUserInput={grabUserInput}
+              userInput={userInput}
             ></ProjectPopup>
           </motion.div>
         </Grid>
@@ -223,65 +248,3 @@ const Home = () => {
 
 export default Home;
 
-//  <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-//    <DialogTitle id='form-dialog-title'>Editing Project</DialogTitle>
-//    <DialogContent>
-//      <DialogContentText>Please rename your project here.</DialogContentText>
-//      <TextField
-//        autoFocus
-//        margin='dense'
-//        id='name'
-//        label='Project name'
-//        type='email'
-//        fullWidth
-//      />
-//    </DialogContent>
-//    <DialogActions>
-//      <Button onClick={handleClose} color='primary' variant='contained'>
-//        Confirm
-//      </Button>
-//      <Button onClick={handleClose} color='primary'>
-//        Cancel
-//      </Button>
-//    </DialogActions>
-//  </Dialog>;
-
-//   <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-//     <DialogTitle id='form-dialog-title'>Deleting Project</DialogTitle>
-//     <DialogContent>
-//       <DialogContentText>
-//         Are you sure you want to delete your project?
-//       </DialogContentText>
-//     </DialogContent>
-//     <DialogActions>
-//       <Button onClick={handleClose} color='primary' variant='contained'>
-//         Confirm
-//       </Button>
-//       <Button onClick={handleClose} color='primary'>
-//         Cancel
-//       </Button>
-//     </DialogActions>
-//   </Dialog>;
-
-//  <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-//    <DialogTitle id='form-dialog-title'>Adding Project</DialogTitle>
-//    <DialogContent>
-//      <DialogContentText>Please name your project here.</DialogContentText>
-//      <TextField
-//        autoFocus
-//        margin='dense'
-//        id='name'
-//        label='Project name'
-//        type='email'
-//        fullWidth
-//      />
-//    </DialogContent>
-//    <DialogActions>
-//      <Button onClick={handleClose} color='primary' variant='contained'>
-//        Add
-//      </Button>
-//      <Button onClick={handleClose} color='primary'>
-//        Cancel
-//      </Button>
-//    </DialogActions>
-//  </Dialog>;
