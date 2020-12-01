@@ -111,7 +111,9 @@ const TaskPopup = (props) => {
         } else if (newTask.progress === 'Done') {
           column = 'column-3';
         }
+        //let newState1 = state;
         state.columns[column].taskIds.shift(newTask.id);
+
         const res = await editTask(task.id, name, task_description, progress);
         if (res.data.progress === 'Planned') {
           column = 'column-1';
@@ -120,10 +122,10 @@ const TaskPopup = (props) => {
         } else if (res.data.progress === 'Done') {
           column = 'column-3';
         }
-        console.log(state);
         const start = state.columns[column];
         const newTaskIds = Array.from(start.taskIds);
         newTaskIds.push(res.data.task_id);
+
         const newColumn = {
           ...start,
           taskIds: newTaskIds,
@@ -144,7 +146,6 @@ const TaskPopup = (props) => {
             [newColumn.id]: newColumn,
           },
         };
-        console.log(newState);
         setState(newState);
       }
       handleClose();

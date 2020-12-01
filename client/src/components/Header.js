@@ -41,7 +41,6 @@ const Header = () => {
                 Spartan Collaboration
               </Typography>
             </Button>
-            <Button color='inherit'> Profile </Button>
             <Button color='inherit' onClick={logout(history, setUser)}>
               Logout
             </Button>

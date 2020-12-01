@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import initialData from '../data/initialData';
 import Column from '../storyboard/Column';
 import '@atlaskit/css-reset';
@@ -8,6 +8,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { getTasks } from '../../actions/task';
 import { editTask } from '../../actions/task';
+import Button from '@material-ui/core/Button';
 
 const Container = styled.div`
   display: flex;
@@ -16,7 +17,7 @@ const Container = styled.div`
 const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
-
+  const history = useHistory();
   useEffect(() => {
     getTasks(location.projectName.projectkey)
       .then((tasks) => {
@@ -144,6 +145,21 @@ const Storyboard = () => {
     >
       <DragDropContext onDragEnd={onDragEnd}>
         <h3 style={{ marginLeft: '1%' }}>{location.projectName.projectname}</h3>
+        <Button
+          color='primary'
+          variant='contained'
+          onClick={(e) => {
+            e.preventDefault();
+            history.push({
+              pathname: '/issues',
+              projectKey: location.projectName.projectkey,
+            });
+          }}
+        >
+          {' '}
+          Issues{' '}
+        </Button>
+
         <Container>
           {state &&
             state.columnOrder &&
