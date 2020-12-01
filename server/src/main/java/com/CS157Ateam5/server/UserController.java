@@ -44,42 +44,51 @@ public class UserController {
 
     @PostMapping(value = "/signup")
     public @ResponseBody
-    String addNewEntry(@RequestBody Users user) {
+    RegistErrorChecker addNewEntry(@RequestBody Users user) {
+    	RegistErrorChecker registChecker = new RegistErrorChecker("", "", "", "", 0, "", "");
         //RegistErrorChecker myObj = new RegistErrorChecker("","","");
         List<String> usernameList = new ArrayList<>();
         List<String> emailList = new ArrayList<>();
         String usernameQuery = "SELECT username FROM users WHERE users.username = '" + user.getUsername() + "';";
         String emailQuery = "SELECT username FROM users WHERE users.email = '" + user.getEmail() + "';";
 
+
         usernameList.addAll(jdbcTemplate.queryForList(usernameQuery, String.class));
         emailList.addAll(jdbcTemplate.queryForList(emailQuery, String.class));
-
-
         if (usernameList.size() > 0) {
             //myObj.setUsernameError("Duplicate username.");
-
-            return "Duplicate username.";
+        	registChecker.setUsernameError("Duplicate username.");
+            return registChecker;
         } else if (emailList.size() > 0) {
             //myObj.setEmailError("Duplicate email.");
-            return "Duplicate email.";
+        	registChecker.setEmailError("Duplicate email.");
+            return registChecker;
         } else if (user.getPassword().equals(user.getConfirmPassword()) == false) {
             //myObj.setConfirmPasswordError("Password does not match.");
-            return "Password does not match.";
+        	registChecker.setConfirmPasswordError("Password does not match.");
+            return registChecker;
         } else {
             JWTUtil jwt = new JWTUtil();
             BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
             String hashedPassword = passEncoder.encode(user.getPassword());
             jdbcTemplate.update("INSERT INTO users(email,password,username) values('" + user.getEmail() + "','" + hashedPassword + "','" + user.getUsername() + "')");
+            String token = jwt.generateToken(user.getEmail());
+            registChecker.setToken(token);
+            registChecker.setEmail(user.getEmail());
+            registChecker.setUsername(user.getUsername());
+            String idQuery = "SELECT user_id FROM users WHERE email = '"+user.getEmail()+"';";
+            Integer user_id = jdbcTemplate.queryForObject(idQuery, Integer.class);
+            registChecker.setUser_id(user_id);
             new LocationController(jdbcTemplate).addNewEntry(new Location(0, user.getUsername(), user.getCity(),
                     user.getState(), user.getCountry(), user.getTimezone()));
-            String token = jwt.generateToken(user.getEmail());
-            return token;
+            return registChecker;
         }
     }
 
     @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/login")
-    public String login(@RequestBody UsersLogin userLogin) {
+    public LoginChecker login(@RequestBody UsersLogin userLogin) {
+    	LoginChecker loginChecker = new LoginChecker("","","",0,"","");
         JWTUtil jwt = new JWTUtil();
         BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
         List<String> userEmail = new ArrayList<>();
@@ -91,30 +100,48 @@ public class UserController {
             if (userEmail.size() == 1) {
                 if (passEncoder.matches(userLogin.getPassword(), userEmail.get(0))) {
                     String token = jwt.generateToken(userLogin.getUsernameEmail());
-                    return token;
+                    loginChecker.setToken(token);
+            		String userQuery = "SELECT user_id,email,username FROM users WHERE email = '"+userLogin.getUsernameEmail()+"' or username = '"+userLogin.getUsernameEmail()+"'";
+            		List<Map<String, Object>> rows = jdbcTemplate.queryForList(userQuery);
+            		for (Map row : rows) {
+                       loginChecker.setUser_id((int) row.get("user_id"));
+                       loginChecker.setEmail((String) row.get("email"));
+                       loginChecker.setUsername((String) row.get("username"));
+                    }
+
+                    //loginChecker.setUser_id(jdbcTemplate.queryForObject(userQuery, Integer.class));
+                    return loginChecker;
                 } else {
-                    return "Incorrect password.";
+                	loginChecker.setPasswordError("Incorrect password.");
+	 				return loginChecker;
                 }
             } else {
-                return "Please enter a valid username/email.";
-            }
-
-
-        } else {
-            String emailQuery = "SELECT password FROM users WHERE users.username = '" + userLogin.getUsernameEmail() + "';";
-            userUsername.addAll(jdbcTemplate.queryForList(emailQuery, String.class));
-            if (userUsername.size() == 1) {
-                if (passEncoder.matches(userLogin.getPassword(), userUsername.get(0))) {
-                    String token = jwt.generateToken(userLogin.getUsernameEmail());
-                    return token;
+            	loginChecker.setUserEmailError("Please enter a valid username/email.");
+	 			return loginChecker;
+            }  } else {
+                String emailQuery = "SELECT password FROM users WHERE users.username = '" + userLogin.getUsernameEmail() + "';";
+                userUsername.addAll(jdbcTemplate.queryForList(emailQuery, String.class));
+                if (userUsername.size() == 1) {
+                    if (passEncoder.matches(userLogin.getPassword(), userUsername.get(0))) {
+                        String token = jwt.generateToken(userLogin.getUsernameEmail());
+                        loginChecker.setToken(token);
+                        String userQuery = "SELECT user_id,email,username FROM users WHERE email = '"+userLogin.getUsernameEmail()+"' or username = '"+userLogin.getUsernameEmail()+"'";
+                		List<Map<String, Object>> rows = jdbcTemplate.queryForList(userQuery);
+                		for (Map row : rows) {
+                           loginChecker.setUser_id((int) row.get("user_id"));
+                           loginChecker.setEmail((String) row.get("email"));
+                           loginChecker.setUsername((String) row.get("username"));
+                        }
+                          return loginChecker;
+                    } else {
+                    	loginChecker.setPasswordError("Incorrect password.");
+    	 				return loginChecker;
+                    }
                 } else {
-                    return "Incorrect password.";
+                	loginChecker.setUserEmailError("Please enter a valid username/email.");
+    	 			return loginChecker;
                 }
-            } else {
-                return "Please enter a valid username/email.";
             }
-        }
-
+    }
     }
 
-}

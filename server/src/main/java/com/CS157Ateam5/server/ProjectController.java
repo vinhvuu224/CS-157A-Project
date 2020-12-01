@@ -18,35 +18,20 @@ public class ProjectController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @CrossOrigin
-    @GetMapping(value="/projects")
-    public @ResponseBody Object getProject(@RequestParam String username, @RequestParam String project_name) {
-       String query = "select project_id from users join haveuserpermissionproject using (user_id) join projects using (project_id)\n" +
-               "where username='"+username+"' and name='"+project_name+"'";
-
-       long project_id=0;
-       try {
-           project_id = jdbcTemplate.queryForObject(query, long.class);
-       }
-       catch (Exception e){return "No project user relationship";}
-
-       query = "select projects.name as 'project_name', task_id, tasks.name as 'task_name', " +
-               "tasks.description as 'task_description',\n" + "progress, project_id, issue_id, issues.description as " +
-               "'issue_description', issues.name as 'issue_name',\n" + "priority_level from projects join havetasks " +
-               "using (project_id) join tasks using (task_id) join haveissues using\n" + "(project_id) join issues using" +
-               " (issue_id) where project_id="+project_id+";";
-
-       List<ProjectDetails> projects = new ArrayList<>();
-       List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
-        for (Map row : rows) {
-            ProjectDetails project = new ProjectDetails((int) row.get("project_id"), (String) row.get("project_name"),
-                    (int) row.get("task_id"), (String) row.get("task_name"), (String) row.get("task_description"),
-                    (String) row.get("progress"), (int) row.get("issue_id"), (String) row.get("issue_name"),
-                    (String) row.get("issue_description"), (String) row.get("priority_level"));
-            projects.add(project);
-        }
-        return projects;
+    @CrossOrigin(origins = "http://localhost:8080")
+    @GetMapping(value="/getProjects")
+    public @ResponseBody Object justatest(int user_id) {
+           List<ProjectInfo> projects = new ArrayList<>();
+           List<String> projectList = new ArrayList<>();
+           String testQuery = "select projects.project_id, name from projects,haveuserpermissionproject where projects.project_id = haveuserpermissionproject.project_id and haveuserpermissionproject.user_id = "+user_id+";";
+           List<Map<String, Object>> rows = jdbcTemplate.queryForList(testQuery);
+           for (Map row : rows) {
+               ProjectInfo project = new ProjectInfo((int) row.get("project_id"), (String) row.get("name"));
+               projects.add(project);
+           }
+           return projects;
     }
+
 
     @PostMapping(value="/projects")
     public @ResponseBody String addNewEntry(@RequestBody Projects project) {
@@ -59,7 +44,7 @@ public class ProjectController {
         long user_id = jdbcTemplate.queryForObject("SELECT user_id FROM users WHERE username='"+project.getUsername()+"';", long.class);
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
-        new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full");
+        System.out.println(new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full"));
         return "Successful";
     }
 

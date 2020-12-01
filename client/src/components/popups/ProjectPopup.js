@@ -8,37 +8,46 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
 const ProjectPopup = (props) => {
-  const { title, description, open, handleClose } = props;
+  const { title, description, open, handleClose, onSubmit, grabUserInput,userInput } = props;
 
   return (
+    
     <Dialog
+    //put form
       open={open}
       onClose={handleClose}
       aria-labelledby='form-dialog-title'
     >
       <DialogTitle id='form-dialog-title'>{title}</DialogTitle>
+      <form onSubmit={(e) => onSubmit(e)}>
       <DialogContent>
         <DialogContentText>{description}</DialogContentText>
         {title === 'Deleting Project' ? (
           <></>
         ) : (
+          
           <TextField
             autoFocus
             margin='dense'
             id='name'
             label='Project name'
+            name = "userInput"
+            value = {userInput}
             fullWidth
+            onChange={(e) => grabUserInput(e)}
           />
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='primary' variant='contained'>
+        <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
           Confirm
         </Button>
+        
         <Button onClick={handleClose} color='primary'>
           Cancel
         </Button>
       </DialogActions>
+      </form>
     </Dialog>
   );
 };
