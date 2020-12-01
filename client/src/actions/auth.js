@@ -10,6 +10,10 @@ export const register = async (
   username,
   password,
   confirmPassword,
+  city,
+  state,
+  country,
+  timezone,
   setUser,
   history
 ) => {
@@ -18,12 +22,20 @@ export const register = async (
     username,
     password,
     confirmPassword,
+    city,
+    state,
+    country,
+    timezone,
   });
   let data = {
     email: null,
     username: null,
     password: null,
     confirmPassword: null,
+    city: null,
+    state: null,
+    country: null,
+    timezone: null,
   };
   try {
     const res = await axios.post('/signup', body, config);
