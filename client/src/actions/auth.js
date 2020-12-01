@@ -49,7 +49,12 @@ export const register = async (
       data.confirmPassword = res.data.confirmPasswordError;
       return data;
     } else {
-      setAuthHeader(res.data.token,res.data.user_id,res.data.email,res.data.username);
+      setAuthHeader(
+        res.data.token,
+        res.data.user_id,
+        res.data.email,
+        res.data.username
+      );
       setUser(res.data);
       history.push('/Home');
     }
@@ -71,6 +76,7 @@ export const login = async (emailUsername, password, history, setUser) => {
   });
   try {
     const res = await axios.post('/login', body, config);
+    console.log(res);
     if (res.data.userEmailError === 'Please enter a valid username/email.') {
       data.emailUsernameError = res.data.userEmailError;
       return data;
@@ -78,10 +84,12 @@ export const login = async (emailUsername, password, history, setUser) => {
       data.passwordError = res.data.passError;
       return data;
     } else {
-
-      setAuthHeader(res.data.token, res.data.user_id);
-      setAuthHeader(res.data.token);
-      setAuthHeader(res.data.token, res.data.user_id,res.data.email,res.data.username);
+      setAuthHeader(
+        res.data.token,
+        res.data.user_id,
+        res.data.email,
+        res.data.username
+      );
       setUser(res.data);
       history.push('/Home');
     }
@@ -105,8 +113,8 @@ const setAuthHeader = (token, user_id, userEmail, userUsername) => {
   const Token = `${token}`;
   localStorage.setItem('token', Token);
   localStorage.setItem('user_id', user_id);
-  localStorage.setItem('userEmail', userEmail);  
-  localStorage.setItem('userUsername', userUsername);  
-  
+  localStorage.setItem('userEmail', userEmail);
+  localStorage.setItem('userUsername', userUsername);
+
   axios.defaults.headers.common['Authorization'] = Token;
 };
