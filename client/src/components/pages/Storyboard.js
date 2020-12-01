@@ -7,39 +7,18 @@ import '@atlaskit/css-reset';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { getTasks } from '../../actions/task';
+import { editTask } from '../../actions/task';
 
 const Container = styled.div`
   display: flex;
 `;
-
-// let initialData = {
-//   tasks: {},
-//   columns: {
-//     'column-1': {
-//       id: 'column-1',
-//       title: 'Planned',
-//       taskIds: [],
-//     },
-//     'column-2': {
-//       id: 'column-2',
-//       title: 'In Progress',
-//       taskIds: [],
-//     },
-//     'column-3': {
-//       id: 'column-3',
-//       title: 'Done',
-//       taskIds: [],
-//     },
-//   },
-//   columnOrder: ['column-1', 'column-2', 'column-3'],
-// };
 
 const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
 
   useEffect(() => {
-    getTasks(1)
+    getTasks(location.projectName.projectkey)
       .then((tasks) => {
         let newData = state;
         tasks.map((task) => {
@@ -72,7 +51,7 @@ const Storyboard = () => {
   }, []);
 
   //Persiting changes after dragging
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
     if (!destination) {
       return;
@@ -83,6 +62,7 @@ const Storyboard = () => {
     ) {
       return;
     }
+
     const start = state.columns[source.droppableId];
     const finish = state.columns[destination.droppableId];
     if (start === finish) {
@@ -110,8 +90,17 @@ const Storyboard = () => {
       ...start,
       taskIds: startTaskIds,
     };
-    const finishTaskIds = Array.from(finish.taskIds);
+
+    let finishTaskIds = Array.from(finish.taskIds);
     finishTaskIds.splice(destination.index, 0, draggableId);
+    finishTaskIds.map((finishTask) => {
+      if (typeof finishTask === 'string') {
+        let finishTask2 = parseInt(finishTask);
+        finishTaskIds.shift(finishTask);
+        finishTaskIds.unshift(finishTask2);
+      }
+    });
+
     const newFinish = {
       ...finish,
       taskIds: finishTaskIds,
@@ -124,7 +113,21 @@ const Storyboard = () => {
         [newFinish.id]: newFinish,
       },
     };
+    const task_id = draggableId;
+    const editState = newState.tasks[draggableId];
+    const name = editState.name;
+    const description = editState.description;
+    let progress;
+    if (newFinish.id === 'column-1') {
+      progress = 'Planned';
+    } else if (newFinish.id === 'column-2') {
+      progress = 'In Progress';
+    } else if (newFinish.id === 'column-3') {
+      progress = 'Done';
+    }
+    console.log(newState);
     setState(newState);
+    await editTask(task_id, name, description, progress);
   };
   return (
     <motion.div
@@ -133,7 +136,7 @@ const Storyboard = () => {
       transition={{ delay: 0.5, duration: 1 }}
     >
       <DragDropContext onDragEnd={onDragEnd}>
-        <h3 style={{ marginLeft: '1%' }}>{location.projectName}</h3>
+        <h3 style={{ marginLeft: '1%' }}>{location.projectName.projectname}</h3>
         <Container>
           {state &&
             state.columnOrder &&
@@ -145,6 +148,7 @@ const Storyboard = () => {
                   key={column.id}
                   column={column}
                   tasks={tasks}
+                  project_id={location.projectName.projectkey}
                   setState={setState}
                   state={state}
                 />

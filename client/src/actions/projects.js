@@ -13,20 +13,6 @@ export const getProjects = async (user_id) => {
   }
 };
 
-export const getTasks = async (project_id) => {
-  try {
-    const res = await axios.get('/tasks', {
-      params: {
-        project_id: project_id,
-      },
-    });
-    return res.data;
-  } catch (err) {
-    console.log(err);
-    return err.response.data;
-  }
-};
-
 export const addProject = async (project_name, username) => {
   const config = {
     headers: {

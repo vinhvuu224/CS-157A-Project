@@ -28,6 +28,7 @@ const TaskPopup = (props) => {
     handleClose,
     setState,
     state,
+    project_id,
   } = props;
   const classes = useStyles();
   const [data, setData] = useState({
@@ -43,7 +44,7 @@ const TaskPopup = (props) => {
     e.preventDefault();
     try {
       if (title === 'Adding Task') {
-        const res = await addTask(1, name, task_description, progress);
+        const res = await addTask(project_id, name, task_description, progress);
         let column = '';
         if (res.data.progress === 'Planned') {
           column = 'column-1';
@@ -100,6 +101,7 @@ const TaskPopup = (props) => {
           }));
         }
       } else if (title === 'Editing Task') {
+        console.log(state.tasks[task.id]);
         let column = '';
         if (task.progress === 'Planned') {
           column = 'column-1';
@@ -108,6 +110,7 @@ const TaskPopup = (props) => {
         } else if (task.progress === 'Done') {
           column = 'column-3';
         }
+        console.log(state);
         state.columns[column].taskIds.shift(task.id);
         const res = await editTask(task.id, name, task_description, progress);
         if (res.data.progress === 'Planned') {
@@ -117,7 +120,7 @@ const TaskPopup = (props) => {
         } else if (res.data.progress === 'Done') {
           column = 'column-3';
         }
-
+        console.log(state);
         const start = state.columns[column];
         const newTaskIds = Array.from(start.taskIds);
         newTaskIds.push(res.data.task_id);
@@ -141,6 +144,7 @@ const TaskPopup = (props) => {
             [newColumn.id]: newColumn,
           },
         };
+        console.log(newState);
         setState(newState);
       }
       handleClose();

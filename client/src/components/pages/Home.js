@@ -21,9 +21,6 @@ import { deleteProject } from '../../actions/projects';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import TaskPopup from '../popups/TaskPopup';
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -36,50 +33,35 @@ const Home = () => {
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
   const [projects, setProjects] = useState([]);
-  //const [projectName, setProjectName] = useState([""]);
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState('');
   const [projectKey, setProjectKey] = useState(0);
-  const [buttonTitle, setButtonTitle] = useState("");
+  const [buttonTitle, setButtonTitle] = useState('');
 
-
-
-
- 
-  useEffect(()=>{
+  useEffect(() => {
     const user_id = JSON.parse(localStorage.getItem('user_id'));
     getProjects(user_id)
-      .then( res => res.map( obj => ({"key":obj.project_id, "name":obj.project_name})))
-      .then( res => setProjects(res));
-  }, [] )
-
-
-
-  // const testing = JSON.parse(localStorage.getItem('user_id'));
-  // console.log("This is the user_id: ", testing)
-  // const testing2 = JSON.stringify(localStorage.getItem('userEmail'));
-  // console.log("This is the userEmail: ", testing2)
-  // const testing3 = JSON.stringify(localStorage.getItem('userUsername'));
-  // console.log("This is the userUsername: ", testing3)
-
+      .then((res) =>
+        res.map((obj) => ({ key: obj.project_id, name: obj.project_name }))
+      )
+      .then((res) => setProjects(res));
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const onClickDeleteButton = (projectKey) => {
-    setProjectKey(projectKey)
+    setProjectKey(projectKey);
   };
 
   const onClickEditButton = (title) => {
-    setButtonTitle(title)
-    
+    setButtonTitle(title);
   };
 
   const onClickAddButton = (title) => {
-    setButtonTitle(title)
-    console.log(title)
+    setButtonTitle(title);
+    console.log(title);
   };
-
 
   const handleClose = () => {
     setOpen(false);
@@ -87,49 +69,39 @@ const Home = () => {
   const classes = useStyles();
   let history = useHistory();
   function nextPage(e) {
-  history.push({ pathname: '/Storyboard', projectName: e});
+    history.push({ pathname: '/Storyboard', projectName: e });
   }
 
-  const grabUserInput = (e) =>{
-  setUserInput(e.target.value)
-}
-  //setProjects({ ...projects, [e.target.name]: e.target.value });
+  const grabUserInput = (e) => {
+    setUserInput(e.target.value);
+  };
 
-
-
-  const  onSubmit = async (e) => {
-    e.preventDefault()
-    if(buttonTitle === 'Add'){
-     const username = localStorage.getItem('userUsername');
-     const res = await addProject(userInput,username)
-     const newProject = {key: res.project_id, name: res.project_name}
-     const listOfProjects = projects; 
-     listOfProjects.push(newProject)
-     setProjects([...listOfProjects])
-       //setProjects(...projects)
-     
-    }
-    else if(buttonTitle === 'Edit'){
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (buttonTitle === 'Add') {
+      const username = localStorage.getItem('userUsername');
+      const res = await addProject(userInput, username);
+      const newProject = { key: res.project_id, name: res.project_name };
+      const listOfProjects = projects;
+      listOfProjects.push(newProject);
+      setProjects([...listOfProjects]);
+    } else if (buttonTitle === 'Edit') {
       const username = JSON.stringify(localStorage.getItem('userUsername'));
-      console.log(projectKey,userInput,username)
-      editProject(projectKey,userInput,username)
-        const items = projects
-        items.map(item=>{
-          if(item.key === projectKey){
-            item.name = userInput
-          }
-          
-        })
-        setProjects([...items])
+      console.log(projectKey, userInput, username);
+      await editProject(projectKey, userInput, username);
+      const items = projects;
+      items.map((item) => {
+        if (item.key === projectKey) {
+          item.name = userInput;
+        }
+      });
+      setProjects([...items]);
+    } else {
+      await deleteProject(projectKey);
+      const filteredItems = projects.filter((item) => item.key !== projectKey);
+      setProjects([...filteredItems]);
     }
-    else{
-      deleteProject(projectKey)
-      const filteredItems = projects.filter(item =>
-      item.key !== projectKey
-      );
-      setProjects([...filteredItems])
-    }
-  }
+  };
 
   return (
     <div className={classes.root}>
@@ -141,26 +113,32 @@ const Home = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            
             <Paper elevation={3}>
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-              <h3 >Your Projects</h3>
-              <IconButton 
-                
-                aria-label='Add'
-                color='primary'
-                onClick={(e) => {
-                  e.preventDefault();
-                  setTitle('Adding Project');
-                  setDescription('Please name your project here.');
-                  handleClickOpen();
-                  
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
-                <AddIcon onClick={()=>{onClickAddButton("Add")}} />
-                
-             </IconButton>
-             </div>
+                <h3>Your Projects</h3>
+                <IconButton
+                  aria-label='Add'
+                  color='primary'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTitle('Adding Project');
+                    setDescription('Please name your project here.');
+                    handleClickOpen();
+                  }}
+                >
+                  <AddIcon
+                    onClick={() => {
+                      onClickAddButton('Add');
+                    }}
+                  />
+                </IconButton>
+              </div>
               <Divider />
               <List style={{ overflowY: 'auto', height: '500px' }}>
                 {projects.map((project) => {
@@ -172,7 +150,10 @@ const Home = () => {
                           button
                           onClick={(e) => {
                             e.preventDefault();
-                            nextPage({projectname : project.name,projectkey : project.key});
+                            nextPage({
+                              projectname: project.name,
+                              projectkey: project.key,
+                            });
                           }}
                         >
                           <ListItemText
@@ -181,7 +162,6 @@ const Home = () => {
                           />
                         </ListItem>
                         <IconButton
-                           
                           aria-label='Edit'
                           color='primary'
                           onClick={(e) => {
@@ -191,7 +171,12 @@ const Home = () => {
                             handleClickOpen();
                           }}
                         >
-                        <CreateIcon onClick={() =>{onClickDeleteButton(project.key);onClickEditButton('Edit')}} />
+                          <CreateIcon
+                            onClick={() => {
+                              onClickDeleteButton(project.key);
+                              onClickEditButton('Edit');
+                            }}
+                          />
                         </IconButton>
                         <IconButton
                           aria-label='Add'
@@ -205,8 +190,12 @@ const Home = () => {
                             handleClickOpen();
                           }}
                         >
-                          <DeleteIcon onClick={() =>{onClickDeleteButton(project.key);onClickAddButton("Delete")}} />
-                          
+                          <DeleteIcon
+                            onClick={() => {
+                              onClickDeleteButton(project.key);
+                              onClickAddButton('Delete');
+                            }}
+                          />
                         </IconButton>
                         <IconButton
                           aria-label='Add'
@@ -214,14 +203,15 @@ const Home = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             setTitle('Collaborate With Other Users');
-                            setDescription(
-                              'Please enter a username/email.'
-                            );
+                            setDescription('Please enter a username/email.');
                             handleClickOpen();
                           }}
                         >
-                          <GroupAddIcon onClick={() =>{onClickDeleteButton(project.key)}} />
-                          
+                          <GroupAddIcon
+                            onClick={() => {
+                              onClickDeleteButton(project.key);
+                            }}
+                          />
                         </IconButton>
                       </ListItem>
                       <Divider />
@@ -247,4 +237,3 @@ const Home = () => {
 };
 
 export default Home;
-

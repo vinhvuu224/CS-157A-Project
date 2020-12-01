@@ -79,6 +79,7 @@ const Column = (props) => {
       <TaskPopup
         setState={props.setState}
         state={props.state}
+        project_id={props.project_id}
         task={task}
         title={title}
         open={open}
