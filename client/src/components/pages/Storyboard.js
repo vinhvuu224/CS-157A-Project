@@ -66,9 +66,16 @@ const Storyboard = () => {
     const start = state.columns[source.droppableId];
     const finish = state.columns[destination.droppableId];
     if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
+      let newTaskIds = Array.from(start.taskIds);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
+      newTaskIds.map((newTaskId) => {
+        if (typeof newTaskId === 'string') {
+          let newTaskId2 = parseInt(newTaskId);
+          newTaskIds[newTaskIds.indexOf(newTaskId)] = newTaskId2;
+          //newTaskIds.push(newTaskId2);
+        }
+      });
       const newColumn = {
         ...start,
         taskIds: newTaskIds,
@@ -80,6 +87,7 @@ const Storyboard = () => {
           [newColumn.id]: newColumn,
         },
       };
+      console.log(newState);
       setState(newState);
       return;
     }
@@ -96,8 +104,7 @@ const Storyboard = () => {
     finishTaskIds.map((finishTask) => {
       if (typeof finishTask === 'string') {
         let finishTask2 = parseInt(finishTask);
-        finishTaskIds.shift(finishTask);
-        finishTaskIds.unshift(finishTask2);
+        finishTaskIds[finishTaskIds.indexOf(finishTask)] = finishTask2;
       }
     });
 
