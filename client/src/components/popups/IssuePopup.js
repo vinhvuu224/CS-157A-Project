@@ -133,6 +133,12 @@ const IssuePopup = (props) => {
         }
       </DialogContent>
       <DialogActions>
+      {title === 'Issue Details' ? (
+           <Button onClick={handleClose} color='primary' variant='contained'>
+           Close
+          </Button>
+        ) : (
+        <div>
         <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
           Confirm
         </Button>
@@ -140,6 +146,8 @@ const IssuePopup = (props) => {
         <Button onClick={handleClose} color='primary'>
           Cancel
         </Button>
+        </div>
+  )}
       </DialogActions>
       </form>
     </Dialog>
