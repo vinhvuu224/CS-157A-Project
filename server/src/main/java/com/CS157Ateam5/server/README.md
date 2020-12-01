@@ -20,8 +20,8 @@ API Usage guide:
 
 /tasks- For accessing `tasks` entity
 - GET: (project_id) Returns all tasks in project
-- POST: (name, description, progress, project_id) - Body. Updates HaveTask relationship 
-- PATCH: (task_id, param_name, param_value) (e.g. 1, "progress"", "Done").
+- POST: (name, description, progress, project_id) - Body. Updates HaveTask relationship . Returns task
+- PATCH: (name, description, progress, project_id) - Body. Returns task.
 - DELETE: (task_id) Deletes havetask relationships 
 
 - For accessing `users` entity
@@ -41,8 +41,8 @@ API Usage guide:
 
 /issues- For accessing `isues` entity
 - GET: (project_id) Returns all issues in project
-- POST: (name, description, priority_level, project_id) - Body. Updates HaveIssue relationship 
-- PATCH: (issue_id, param_name, param_value) (e.g. 1, "priority_level"", "High").
+- POST: (name, description, priority_level, project_id) - Body. Updates HaveIssue relationship . Returns issue
+- PATCH: (name, description, priority_level, project_id) - Body. Returns issue
 - DELETE: (issue_id) Deletes haveissue relationships 
 
 /haveissues- For accessing `haveissues` entity
