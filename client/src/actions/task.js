@@ -48,19 +48,14 @@ export const deleteTask = async (task_id) => {
 };
 
 export const editTask = async (task_id, name, description, progress) => {
+  const body = JSON.stringify({
+    task_id,
+    name,
+    description,
+    progress,
+  });
   try {
-    const res = await axios.patch(
-      '/tasks',
-      {
-        params: {
-          task_id: task_id,
-          param_name: name,
-          description: description,
-          progress: progress,
-        },
-      },
-      config
-    );
+    const res = await axios.patch('/tasks', body, config);
     return res;
   } catch (err) {
     console.log(err);

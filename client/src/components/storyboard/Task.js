@@ -34,6 +34,7 @@ const Task = (props) => {
             color='primary'
             onClick={(e) => {
               e.preventDefault();
+              props.setTask(props.task);
               props.setTitle('Editing Task');
               props.setDescription(
                 'Please rename your task and description here.'

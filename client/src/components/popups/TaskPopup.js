@@ -79,8 +79,6 @@ const TaskPopup = (props) => {
       } else if (title === 'Deleting Task') {
         const res = await deleteTask(task.id);
         if (res.data === 'Success') {
-          let newState = state;
-          delete newState.tasks[task.id];
           let column = '';
           if (task.progress === 'Planned') {
             column = 'column-1';
@@ -89,53 +87,63 @@ const TaskPopup = (props) => {
           } else if (task.progress === 'Done') {
             column = 'column-3';
           }
+          let newState = state;
+          delete newState.tasks[task.id];
           newState.columns[column].taskIds.shift(task.id);
 
           let newTasks = newState.tasks;
           let newColumns = newState.columns;
-          console.log(newState);
           setState((state) => ({
             ...state,
             tasks: newTasks,
             columns: newColumns,
           }));
-        } else if (title === 'Editing Task') {
-          const res = await editTask(task.id);
-          let column = '';
-          if (res.data.progress === 'Planned') {
-            column = 'column-1';
-          } else if (res.data.progress === 'In Progress') {
-            column = 'column-2';
-          } else if (res.data.progress === 'Done') {
-            column = 'column-3';
-          }
-          const start = state.columns[column];
-          const newTaskIds = Array.from(start.taskIds);
-          newTaskIds.push(res.data.task_id);
-          const newColumn = {
-            ...start,
-            taskIds: newTaskIds,
-          };
-
-          setState((state) => ({
-            ...state,
-            tasks: {
-              ...state.tasks,
-              [res.data.task_id]: {
-                id: res.data.task_id,
-                name: res.data.name,
-                description: res.data.description,
-                progress: res.data.progress,
-              },
-            },
-            columns: {
-              ...state.columns,
-              [newColumn.id]: newColumn,
-            },
-          }));
         }
-        handleClose();
+      } else if (title === 'Editing Task') {
+        let column = '';
+        if (task.progress === 'Planned') {
+          column = 'column-1';
+        } else if (task.progress === 'In Progress') {
+          column = 'column-2';
+        } else if (task.progress === 'Done') {
+          column = 'column-3';
+        }
+        state.columns[column].taskIds.shift(task.id);
+        const res = await editTask(task.id, name, task_description, progress);
+        if (res.data.progress === 'Planned') {
+          column = 'column-1';
+        } else if (res.data.progress === 'In Progress') {
+          column = 'column-2';
+        } else if (res.data.progress === 'Done') {
+          column = 'column-3';
+        }
+
+        const start = state.columns[column];
+        const newTaskIds = Array.from(start.taskIds);
+        newTaskIds.push(res.data.task_id);
+        const newColumn = {
+          ...start,
+          taskIds: newTaskIds,
+        };
+        const newState = {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [res.data.task_id]: {
+              id: res.data.task_id,
+              name: res.data.name,
+              description: res.data.description,
+              progress: res.data.progress,
+            },
+          },
+          columns: {
+            ...state.columns,
+            [newColumn.id]: newColumn,
+          },
+        };
+        setState(newState);
       }
+      handleClose();
     } catch (err) {
       console.log(err);
     }
