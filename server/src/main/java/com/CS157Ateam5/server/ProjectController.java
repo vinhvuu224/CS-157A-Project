@@ -2,6 +2,7 @@ package com.CS157Ateam5.server;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,6 @@ public class ProjectController {
     @GetMapping(value="/getProjects")
     public @ResponseBody Object justatest(int user_id) {
            List<ProjectInfo> projects = new ArrayList<>();
-           List<String> projectList = new ArrayList<>();
            String testQuery = "select projects.project_id, name from projects,haveuserpermissionproject where projects.project_id = haveuserpermissionproject.project_id and haveuserpermissionproject.user_id = "+user_id+";";
            List<Map<String, Object>> rows = jdbcTemplate.queryForList(testQuery);
            for (Map row : rows) {
@@ -32,6 +32,19 @@ public class ProjectController {
            return projects;
     }
 
+    @GetMapping(value="/projects")
+    public @ResponseBody Object justatest(@RequestParam long project_id) {
+        String query = "SELECT user_id, username FROM users JOIN haveuserpermissionproject USING (user_id) WHERE " +
+                "project_id="+project_id+";";
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
+        List<HashMap<Integer, String>> users = new ArrayList<>();
+        for(Map row: rows) {
+            HashMap<Integer, String> temp = new HashMap<>();
+            temp.put((Integer) row.get("user_id"), (String) row.get("username"));
+            users.add(temp);
+        }
+        return users;
+    }
 
     @PostMapping(value="/projects")
     public @ResponseBody Object addNewEntry(@RequestBody Projects project) {
