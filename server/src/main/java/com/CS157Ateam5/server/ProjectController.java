@@ -46,7 +46,7 @@ public class ProjectController {
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
         System.out.println(new UserProjectPermissionController(jdbcTemplate).addNewEntry(user_id, project_id, "Full"));
         project.setProject_id(project_id);
-        return project; 	
+        return project;
     }
     @PatchMapping(value="/projects")
     public @ResponseBody String updateEntry(@RequestParam long project_id, @RequestParam String project_name,

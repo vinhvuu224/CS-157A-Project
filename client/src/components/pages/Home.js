@@ -20,6 +20,7 @@ import { editProject } from '../../actions/projects';
 import { deleteProject } from '../../actions/projects';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import TaskPopup from '../popups/TaskPopup';
+import { Chip } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +37,13 @@ const Home = () => {
   const [userInput, setUserInput] = useState('');
   const [projectKey, setProjectKey] = useState(0);
   const [buttonTitle, setButtonTitle] = useState('');
+  const [chipData, setChipData] = React.useState([
+    { key: 0, label: 'Angular' },
+    { key: 1, label: 'jQuery' },
+    { key: 2, label: 'Polymer' },
+    { key: 3, label: 'React' },
+    { key: 4, label: 'Vue.js' },
+  ]);
 
   useEffect(() => {
     const user_id = JSON.parse(localStorage.getItem('user_id'));
@@ -45,6 +53,19 @@ const Home = () => {
       )
       .then((res) => setProjects(res));
   }, []);
+
+  // const testing = JSON.parse(localStorage.getItem('user_id'));
+  // console.log("This is the user_id: ", testing)
+  // const testing2 = JSON.stringify(localStorage.getItem('userEmail'));
+  // console.log("This is the userEmail: ", testing2)
+  // const testing3 = JSON.stringify(localStorage.getItem('userUsername'));
+  // console.log("This is the userUsername: ", testing3)
+
+  const handleDelete = (chipToDelete) => () => {
+    setChipData((chips) =>
+      chips.filter((chip) => chip.key !== chipToDelete.key)
+    );
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -228,6 +249,8 @@ const Home = () => {
               onSubmit={onSubmit}
               grabUserInput={grabUserInput}
               userInput={userInput}
+              chipData={chipData}
+              handleDelete={handleDelete}
             ></ProjectPopup>
           </motion.div>
         </Grid>
