@@ -18,6 +18,19 @@ export const getTasks = async (project_id) => {
   }
 };
 
+export const getTask = async (task_id) => {
+  try {
+    const res = await axios.get(
+      '/tasks',
+      { params: { task_id: task_id } },
+      config
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const addTask = async (project_id, name, task_description, progress) => {
   const description = task_description;
   const body = JSON.stringify({

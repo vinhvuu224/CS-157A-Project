@@ -4,7 +4,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import { addTask, deleteTask, editTask } from '../../actions/task';
+import { addTask, deleteTask, editTask, getTask } from '../../actions/task';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -101,17 +101,17 @@ const TaskPopup = (props) => {
           }));
         }
       } else if (title === 'Editing Task') {
-        console.log(state.tasks[task.id]);
+        const task_id = task.id;
+        const newTask = await getTask(task_id);
         let column = '';
-        if (task.progress === 'Planned') {
+        if (newTask.progress === 'Planned') {
           column = 'column-1';
-        } else if (task.progress === 'In Progress') {
+        } else if (newTask.progress === 'In Progress') {
           column = 'column-2';
-        } else if (task.progress === 'Done') {
+        } else if (newTask.progress === 'Done') {
           column = 'column-3';
         }
-        console.log(state);
-        state.columns[column].taskIds.shift(task.id);
+        state.columns[column].taskIds.shift(newTask.id);
         const res = await editTask(task.id, name, task_description, progress);
         if (res.data.progress === 'Planned') {
           column = 'column-1';
