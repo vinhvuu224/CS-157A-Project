@@ -17,10 +17,11 @@ public class TaskController {
     JdbcTemplate jdbcTemplate;
 
     @CrossOrigin
-    @GetMapping(value="/tasks")
-    public @ResponseBody Object getTasks(@RequestParam long project_id) {
+    @GetMapping(value = "/tasks")
+    public @ResponseBody
+    Object getTasks(@RequestParam long project_id) {
         String query = "select tasks.task_id, tasks.name, tasks.description, tasks.progress from tasks " +
-                "join havetasks using (task_id) join projects using (project_id)" + " where project_id="+project_id+";";
+                "join havetasks using (task_id) join projects using (project_id)" + " where project_id=" + project_id + ";";
 
         List<Tasks> tasks = new ArrayList<>();
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
@@ -32,29 +33,32 @@ public class TaskController {
         return tasks;
     }
 
-    @PostMapping(value="/tasks")
-    public @ResponseBody String addNewEntry(@RequestBody Tasks task) {
+    @PostMapping(value = "/tasks")
+    public @ResponseBody
+    Tasks addNewEntry(@RequestBody Tasks task) {
         jdbcTemplate.update("INSERT INTO tasks(name, description, progress) values('" + task.getName() + "', '"
-                + task.getDescription() + "', '"+task.getProgress()+"');");
+                + task.getDescription() + "', '" + task.getProgress() + "');");
         long task_id = jdbcTemplate.queryForObject("SELECT MAX(task_id) from tasks", long.class);
         new HaveTaskController(jdbcTemplate).addNewEntry(task.getProject_id(), task_id);
-        return "Successful";
+        task.setTask_id(task_id);
+        return task;
     }
 
     /*
         Provide parameter name to be changed and the new value when sending request
      */
-    @PatchMapping(value="/tasks")
-    public @ResponseBody String updateEntry(@RequestParam long task_id, @RequestParam String param_name,
-                                            @RequestParam Object param_value) {
-        String taskUpdateQuery = "UPDATE tasks SET " + param_name + " = '" + param_value + "' WHERE task_id="+task_id+";";
+    @PatchMapping(value = "/tasks")
+    public @ResponseBody Tasks updateEntry(@RequestBody Tasks task) {
+        String taskUpdateQuery = "UPDATE tasks SET name='"+task.getName()+"', description='"+task.getDescription()+"'," +
+                " progress='"+task.getProgress()+"' WHERE task_id="+task.getTask_id()+";";
         jdbcTemplate.update(taskUpdateQuery);
-        return "Success";
+        return task;
     }
 
-    @DeleteMapping(value="/tasks")
-    public @ResponseBody String deleteEntry(@RequestParam long task_id) {
-        String taskDeleteQuery = "DELETE FROM tasks WHERE task_id="+task_id+";";
+    @DeleteMapping(value = "/tasks")
+    public @ResponseBody
+    String deleteEntry(@RequestParam long task_id) {
+        String taskDeleteQuery = "DELETE FROM tasks WHERE task_id=" + task_id + ";";
         jdbcTemplate.update(taskDeleteQuery);
         new HaveTaskController(jdbcTemplate).deleteEntry(0, task_id);
         return "Success";

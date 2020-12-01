@@ -42,20 +42,23 @@ public class LocationController {
     @PostMapping(value = "/location")
     public @ResponseBody
     String addNewEntry(@RequestBody Location location) {
-        String query = "SELECT location_id from location where City='"+location.getCity()+"' " +
-                "and State='"+location.getState()+"' and Country='"+location.getCountry()+"';";
-        try{
-            long id = jdbcTemplate.queryForObject(query, long.class);
-            return "Location already exists id="+id;
-        }
-        catch(Exception e) {
+        String query = "SELECT location_id from location where City='" + location.getCity() + "' " +
+                "and State='" + location.getState() + "' and Country='" + location.getCountry() + "';";
+        long location_id = 0;
+        try {
+            location_id = jdbcTemplate.queryForObject(query, long.class);
+        } catch (Exception e) {
             jdbcTemplate.update("INSERT INTO location(City, State, Country, time_zone) values('" + location.getCity() + "'" +
                     ", '" + location.getState() + "', '" + location.getCountry() + "', '" + location.getTime_zone() + "')");
-            long location_id = jdbcTemplate.queryForObject("SELECT MAX(location_id) from location", long.class);
-            long user_id = jdbcTemplate.queryForObject("SELECT user_id from users where username='"+location.getUsername()+"';",
-                    long.class);
-            new InController(jdbcTemplate).addNewEntry(user_id, location_id);
+            location_id = jdbcTemplate.queryForObject("SELECT MAX(location_id) from location", long.class);
         }
+        if(location_id == 0)
+        {
+            return "Location not found";
+        }
+        long user_id = jdbcTemplate.queryForObject("SELECT user_id from users where username='" + location.getUsername() + "';",
+                long.class);
+        new InController(jdbcTemplate).addNewEntry(user_id, location_id);
         return "Successful";
     }
 

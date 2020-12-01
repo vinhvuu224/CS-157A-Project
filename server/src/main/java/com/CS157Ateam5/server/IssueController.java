@@ -35,24 +35,24 @@ public class IssueController {
 
     @PostMapping(value = "/issues")
     public @ResponseBody
-    String addNewEntry(@RequestBody Issues issue) {
+    Issues addNewEntry(@RequestBody Issues issue) {
         jdbcTemplate.update("INSERT INTO issues(name, description, priority_level) values('" + issue.getName() + "', '"
                 + issue.getDescription() + "', '" + issue.getPriorityLevel() + "');");
         long issue_id = jdbcTemplate.queryForObject("SELECT MAX(issue_id) from issues", long.class);
         new HaveTaskController(jdbcTemplate).addNewEntry(issue.getProject_id(), issue_id);
-        return "Successful";
+        issue.setIssue_id(issue_id);
+        return issue;
     }
 
     /*
         Provide parameter name to be changed and the new value when sending request
      */
     @PatchMapping(value = "/issues")
-    public @ResponseBody
-    String updateEntry(@RequestParam long issue_id, @RequestParam String param_name,
-                       @RequestParam Object param_value) {
-        String taskUpdateQuery = "UPDATE issues SET " + param_name + " = '" + param_value + "' WHERE issue_id=" + issue_id + ";";
-        jdbcTemplate.update(taskUpdateQuery);
-        return "Success";
+    public @ResponseBody Issues updateEntry(@RequestBody Issues issue) {
+        String issueUpdateQuery = "UPDATE issues SET name='"+issue.getName()+"', description='"+issue.getDescription()+"'," +
+                " priority_level='"+issue.getPriorityLevel()+"' WHERE issue_id="+issue.getIssue_id()+";";
+        jdbcTemplate.update(issueUpdateQuery);
+        return issue;
     }
 
     @DeleteMapping(value = "/issues")
