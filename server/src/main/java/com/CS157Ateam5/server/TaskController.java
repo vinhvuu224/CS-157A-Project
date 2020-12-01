@@ -40,7 +40,6 @@ public class TaskController {
                 + task.getDescription() + "', '" + task.getProgress() + "');");
         long task_id = jdbcTemplate.queryForObject("SELECT MAX(task_id) from tasks", long.class);
         new HaveTaskController(jdbcTemplate).addNewEntry(task.getProject_id(), task_id);
-
         task.setTask_id(task_id);
         return task;
     }
@@ -49,16 +48,11 @@ public class TaskController {
         Provide parameter name to be changed and the new value when sending request
      */
     @PatchMapping(value = "/tasks")
-    public @ResponseBody
-    Tasks updateEntry(@RequestParam long task_id, @RequestParam String param_name,
-                      @RequestParam Object param_value) {
-        String taskUpdateQuery = "UPDATE tasks SET " + param_name + " = '" + param_value + "' WHERE task_id=" + task_id + ";";
+    public @ResponseBody Tasks updateEntry(@RequestBody Tasks task) {
+        String taskUpdateQuery = "UPDATE tasks SET name='"+task.getName()+"', description='"+task.getDescription()+"'," +
+                " progress='"+task.getProgress()+"' WHERE task_id="+task.getTask_id()+";";
         jdbcTemplate.update(taskUpdateQuery);
-        Map<String, Object> obj = jdbcTemplate.queryForMap("SELECT * FROM tasks WHERE task_id=" + task_id + ";");
-        long project_id = jdbcTemplate.queryForObject("SELECT project_id FROM havetasks WHERE task_id="+task_id+";", long.class);
-        Tasks temp = new Tasks(task_id, project_id, (String) obj.get("name"),
-                (String) obj.get("description"), (String) obj.get("progress"));
-        return temp;
+        return task;
     }
 
     @DeleteMapping(value = "/tasks")
