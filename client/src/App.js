@@ -8,6 +8,7 @@ import Login from './components/auth/Login';
 import AuthenticatedRoute from './components/routes/AuthenticatedRoute';
 import RedirectOnceLoggedIn from './components/routes/RedirectOnceLoggedIn';
 import Home from './components/pages/Home';
+import Issues from './components/pages/Issues';
 import Header from './components/Header';
 import Storyboard from './components/pages/Storyboard';
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
           <Switch>
             <RedirectOnceLoggedIn exact path='/' component={Landing} />
             <AuthenticatedRoute exact path='/Home' component={Home} />
+            <AuthenticatedRoute exact path='/Issues' component={Issues} />
             <AuthenticatedRoute
               exact
               path='/Storyboard'
