@@ -37,11 +37,9 @@ public class ProjectController {
         String query = "SELECT user_id, username FROM users JOIN haveuserpermissionproject USING (user_id) WHERE " +
                 "project_id="+project_id+";";
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
-        List<HashMap<Integer, String>> users = new ArrayList<>();
+        List<UserID> users = new ArrayList<>();
         for(Map row: rows) {
-            HashMap<Integer, String> temp = new HashMap<>();
-            temp.put((Integer) row.get("user_id"), (String) row.get("username"));
-            users.add(temp);
+            users.add(new UserID((int) row.get("user_id"), (String) row.get("username")));
         }
         return users;
     }
