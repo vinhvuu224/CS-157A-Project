@@ -19,7 +19,7 @@ API Usage guide:
 - DELETE: (project_id) Deletes all corresponding relationships 
 
 /tasks- For accessing `tasks` entity
-- GET: (project_id) Returns all tasks in project
+- GET: (project_id OR task_id) Returns all tasks in project, OR details of single task respectively
 - POST: (name, description, progress, project_id) - Body. Updates HaveTask relationship . Returns task
 - PATCH: (name, description, progress, project_id) - Body. Returns task.
 - DELETE: (task_id) Deletes havetask relationships 
@@ -40,7 +40,7 @@ API Usage guide:
                                            all project-user relationships 
 
 /issues- For accessing `isues` entity
-- GET: (project_id) Returns all issues in project
+- GET: (project_id OR issue_id) Returns all issues in project OR details of single issue respectively
 - POST: (name, description, priority_level, project_id) - Body. Updates HaveIssue relationship . Returns issue
 - PATCH: (name, description, priority_level, project_id) - Body. Returns issue
 - DELETE: (issue_id) Deletes haveissue relationships 
