@@ -65,7 +65,7 @@ public class UserController {
             return registChecker;
         } else if (user.getPassword().equals(user.getConfirmPassword()) == false) {
             //myObj.setConfirmPasswordError("Password does not match.");
-        	registChecker.setConfirmPasswordError("Password does not match. ");
+        	registChecker.setConfirmPasswordError("Password does not match.");
             return registChecker;
         } else {
             JWTUtil jwt = new JWTUtil();
@@ -108,7 +108,7 @@ public class UserController {
                        loginChecker.setEmail((String) row.get("email"));
                        loginChecker.setUsername((String) row.get("username"));
                     }
-  
+
                     //loginChecker.setUser_id(jdbcTemplate.queryForObject(userQuery, Integer.class));
                     return loginChecker;
                 } else {
@@ -116,6 +116,9 @@ public class UserController {
 	 				return loginChecker;
                 }
             } else {
+            	loginChecker.setUserEmailError("Please enter a valid username/email.");
+	 			return loginChecker;
+            }  } else {
                 String emailQuery = "SELECT password FROM users WHERE users.username = '" + userLogin.getUsernameEmail() + "';";
                 userUsername.addAll(jdbcTemplate.queryForList(emailQuery, String.class));
                 if (userUsername.size() == 1) {
@@ -139,9 +142,6 @@ public class UserController {
     	 			return loginChecker;
                 }
             }
-
-}
-		return loginChecker;
-}
-}
+    }
+    }
 
