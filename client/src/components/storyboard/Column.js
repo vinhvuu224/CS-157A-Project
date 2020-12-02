@@ -25,6 +25,7 @@ const TaskList = styled.div`
 `;
 const Column = (props) => {
   const [title, setTitle] = useState(null);
+  const [task, setTask] = useState(null);
   const [description, setDescription] = useState(null);
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -68,6 +69,7 @@ const Column = (props) => {
                 setTitle={setTitle}
                 setDescription={setDescription}
                 handleClickOpen={handleClickOpen}
+                setTask={setTask}
               />
             ))}
             {provided.placeholder}
@@ -75,6 +77,10 @@ const Column = (props) => {
         )}
       </Droppable>
       <TaskPopup
+        setState={props.setState}
+        state={props.state}
+        project_id={props.project_id}
+        task={task}
         title={title}
         open={open}
         description={description}
