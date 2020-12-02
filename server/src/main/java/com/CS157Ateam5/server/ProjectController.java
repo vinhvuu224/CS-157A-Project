@@ -54,7 +54,8 @@ public class ProjectController {
         }
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
-        new UserProjectPermissionController(jdbcTemplate).addNewEntry(project.getUsername(), project_id, "Full");
+        new UserProjectPermissionController(jdbcTemplate).addNewEntry(new UserProjectPost(project.getUsername(),
+                project_id, "Full"));
         project.setProject_id(project_id);
         return project;
     }

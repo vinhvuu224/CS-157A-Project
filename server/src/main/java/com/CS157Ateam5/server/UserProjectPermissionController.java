@@ -38,9 +38,11 @@ public class UserProjectPermissionController {
 
     @PostMapping(value = "/userprojects")
     public @ResponseBody
-    String addNewEntry(@RequestParam String username, @RequestParam long project_id,
-                       @RequestParam String permission_level) {
+    String addNewEntry(@RequestBody UserProjectPost user) {
 
+        long project_id = user.getProject_id();
+        String username = user.getUsername();
+        String permission_level = user.getPermission_level();
         long user_id = jdbcTemplate.queryForObject("SELECT user_id FROM users WHERE username='"+username+"';", long.class);
         String existingQuery = "SELECT user_id FROM haveuserpermissionproject WHERE user_id=" + user_id + " AND project_id="
                 + project_id + ";";
