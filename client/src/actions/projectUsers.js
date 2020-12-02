@@ -15,20 +15,20 @@ export const getProjectUsers = async (project_id) => {
   };
   
   export const addProjectUsers = async (username, project_id,permission_level) => {
-    console.log(username)
+    const body = JSON.stringify({
+        username,
+        project_id,
+        permission_level,
+      });
     const config = {
         headers: {
           'Content-Type': 'application/json',
         },
       };
     try {
-        const res = await axios.post('/userprojects', {
-          params: {
-            username: username,
-            project_id: project_id,
-            permission_level: permission_level
-          },
-        },config);
+        const res = await axios.post('/userprojects', 
+          body
+        ,config);
         return res.data;
       } catch (err) {
         console.log(err);

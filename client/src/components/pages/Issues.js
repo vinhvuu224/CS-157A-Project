@@ -17,6 +17,8 @@ import { editIssue } from '../../actions/issues';
 import { deleteIssue } from '../../actions/issues';
 import IssuePopup from '../popups/IssuePopup';
 import { getIssues } from '../../actions/issues';
+import { useLocation } from 'react-router-dom';
+
 
 
 
@@ -46,13 +48,15 @@ const Issues = () => {
   const [priorityLevelDetail, setPriorityLevelDetail] = useState("");
   const [issueNameDetail, setIssueNameDetail] = useState("");
   const [issueDescriptionDetail, setIssueDescDetail] = useState("");
+  const location = useLocation();
+
 
 
 
  
   useEffect(()=>{
     const user_id = JSON.parse(localStorage.getItem('user_id'));
-    getIssues(2)
+    getIssues(location.projectKey)
       //.then( res => res.map( obj => ({"key":obj.project_id, "name":obj.project_name})))
       .then( res => setIssues([...res]));
   }, [] )

@@ -9,6 +9,13 @@ import styled from 'styled-components';
 import { getTasks } from '../../actions/task';
 import { editTask } from '../../actions/task';
 import Button from '@material-ui/core/Button';
+import { Chip } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import { getProjectUsers } from '../../actions/projectUsers';
+import { addProjectUsers } from '../../actions/projectUsers';
+import { deleteProjectUsers } from '../../actions/projectUsers';
+
+
 
 const Container = styled.div`
   display: flex;
@@ -18,6 +25,33 @@ const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
   const history = useHistory();
+  const [chipData, setChipData] = useState([
+    { key: 0, label: 'Angular' },
+    { key: 1, label: 'jQuery' },
+    { key: 2, label: 'Polymer' },
+    { key: 3, label: 'React' },
+    { key: 4, label: 'Vue.js' },
+  ]);
+  const [projectKey, setProjectKey] = useState(0);
+  const [buttonTitle, setButtonTitle] = useState('');
+  const [userKey, setUserKey] = useState(0);
+
+  const onClickAddButton = (title) => {
+    setButtonTitle(title);
+    console.log(title);
+  };
+  
+  const onClickDeleteUserButton = (userKey) => {
+    setUserKey(userKey);
+  };
+
+  const handleDelete = (chipToDelete) => {
+    setChipData((chips) =>
+      chips.filter((chip) => chip.key !== chipToDelete.key)
+    );
+    //deleteProjectUsers(location.projectName.projectkey,userKey)
+  };
+
   useEffect(() => {
     getTasks(location.projectName.projectkey)
       .then((tasks) => {
@@ -49,6 +83,12 @@ const Storyboard = () => {
         });
         setState(x);
       });
+
+      getProjectUsers(location.projectName.projectkey)
+      .then((res) =>
+          res.map((obj) => ({ key: obj.user_id, label: obj.username }))
+        )
+        .then((res) => setChipData(res));
   }, []);
 
   //Persiting changes after dragging
@@ -176,7 +216,29 @@ const Storyboard = () => {
             })}
         </Container>
       </DragDropContext>
+      <div> 
+                    <header>User list</header>
+                    <Paper component="ul" >
+              {chipData.map((data) => {
+              let icon;
+          return (
+          <li key={data.key}>
+            <Chip
+               onClick={() => {
+                onClickAddButton("Delete User");
+
+              }}
+              icon={icon}
+              label={data.label}
+              //onDelete={data.label === 'React' ? undefined : handleDelete(data)}
+              onDelete={handleDelete(data)}
+            />
+          </li>
+        );
+      })}
+    </Paper></div>
     </motion.div>
+
   );
 };
 

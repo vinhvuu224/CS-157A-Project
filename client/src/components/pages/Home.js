@@ -152,16 +152,6 @@ const Home = () => {
       listOfProjectUsers.push(newProjectUser);
       setChipData([...listOfProjectUsers]);
     }
-
-    else if (buttonTitle === 'Delete User') {
-      await deleteProjectUsers(projectKey);
-      console.log(projects)
-      const filteredItems = projects.filter((item) => item.key !== projectKey);
-      console.log(filteredItems)
-      setProjects([...filteredItems]);
-    }
-
-
     else {
       
       await deleteProject(projectKey);
@@ -305,28 +295,7 @@ const Home = () => {
             >
 
             </ProjectPopup>
-                  <div> 
-                    <header>User list</header>
-                    <Paper component="ul" >
-              {chipData.map((data) => {
-              let icon;
-          return (
-          <li key={data.key}>
-            <Chip
-               onClick={() => {
-                onClickAddButton("Delete User");
-                onClickDeleteUserButton(data.key);
 
-              }}
-              icon={icon}
-              label={data.label}
-              //onDelete={data.label === 'React' ? undefined : handleDelete(data)}
-              onDelete={handleDelete(data)}
-            />
-          </li>
-        );
-      })}
-    </Paper></div>
 
           </motion.div>
         </Grid>
