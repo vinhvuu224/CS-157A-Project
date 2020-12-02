@@ -58,13 +58,6 @@ const Home = () => {
       )
       .then((res) => setProjects(res));
     
-    getProjectUsers(2)
-    .then((res) =>
-        res.map((obj) => ({ key: obj.user_id, label: obj.username }))
-      )
-      .then((res) => setChipData(res));
-    
-
   }, []);
 
   // const testing = JSON.parse(localStorage.getItem('user_id'));
