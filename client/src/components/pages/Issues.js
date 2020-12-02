@@ -17,6 +17,7 @@ import { editIssue } from '../../actions/issues';
 import { deleteIssue } from '../../actions/issues';
 import IssuePopup from '../popups/IssuePopup';
 import { getIssues } from '../../actions/issues';
+import { useLocation } from 'react-router-dom';
 
 
 
@@ -46,13 +47,14 @@ const Issues = () => {
   const [priorityLevelDetail, setPriorityLevelDetail] = useState("");
   const [issueNameDetail, setIssueNameDetail] = useState("");
   const [issueDescriptionDetail, setIssueDescDetail] = useState("");
-
+  const location = useLocation();
 
 
  
   useEffect(()=>{
     const user_id = JSON.parse(localStorage.getItem('user_id'));
-    getIssues(2)
+    
+    getIssues(location.projectKey)
       //.then( res => res.map( obj => ({"key":obj.project_id, "name":obj.project_name})))
       .then( res => setIssues([...res]));
   }, [] )
@@ -112,7 +114,7 @@ const grabUserInputDescription = (e) =>{
   const  onSubmit = async (e) => {
     e.preventDefault()
     if(buttonTitle === 'Add'){
-     const res = await addIssue(2,userInputName,userInputDescription,priorityLevel)
+     const res = await addIssue(location.projectKey,userInputName,userInputDescription,priorityLevel)
 
      const newIssue = {issue_id: res.issue_id, project_id:res.project_id,name:res.name,description:res.description,priority_level:res.priority_level}
 
@@ -266,4 +268,3 @@ const grabUserInputDescription = (e) =>{
 };
 
 export default Issues;
-

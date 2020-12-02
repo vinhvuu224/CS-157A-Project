@@ -11,7 +11,7 @@ import { Chip } from '@material-ui/core';
 
 
 const ProjectPopup = (props) => {
-  const { title, description, open, handleClose, onSubmit, grabUserInput,userInput, chipData, handleDelete } = props;
+  const {usernameInput, grabUsernameInput, title, description, open, handleClose, onSubmit, grabUserInput,userInput} = props;
 
   return (
     
@@ -27,7 +27,21 @@ const ProjectPopup = (props) => {
         <DialogContentText>{description}</DialogContentText>
         {title === 'Deleting Project' ? (
           <></>
-        ) : (
+        ) : title === 'Collaborate With Other Users' ? (
+          <div>
+          <TextField
+            autoFocus
+            margin='dense'
+            id='name'
+            label='Username'
+            name = "usernameInput"
+            value = {usernameInput}
+            fullWidth
+            onChange={(e) => grabUsernameInput(e)}
+          />
+        
+          </div>   
+      ) : (
           
           <TextField
             autoFocus
@@ -41,27 +55,10 @@ const ProjectPopup = (props) => {
           />
         )
         
-
         
         }
       </DialogContent>
-      <Paper component="ul" >
-      {chipData.map((data) => {
-        let icon;
-
-        
-
-        return (
-          <li key={data.key}>
-            <Chip
-              icon={icon}
-              label={data.label}
-              onDelete={data.label === 'React' ? undefined : handleDelete(data)}
-            />
-          </li>
-        );
-      })}
-    </Paper>
+     
       <DialogActions>
         <Button type="submit" onClick={handleClose} color='primary' variant='contained'>
           Confirm

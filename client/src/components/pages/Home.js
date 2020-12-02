@@ -14,13 +14,14 @@ import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import ProjectPopup from '../popups/ProjectPopup';
 import { getProjects } from '../../actions/projects';
-import { UserContext } from '../../UserContext';
 import { addProject } from '../../actions/projects';
 import { editProject } from '../../actions/projects';
 import { deleteProject } from '../../actions/projects';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import TaskPopup from '../popups/TaskPopup';
 import { Chip } from '@material-ui/core';
+import { getProjectUsers } from '../../actions/projectUsers';
+import { addProjectUsers } from '../../actions/projectUsers';
+import { deleteProjectUsers } from '../../actions/projectUsers';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +38,11 @@ const Home = () => {
   const [userInput, setUserInput] = useState('');
   const [projectKey, setProjectKey] = useState(0);
   const [buttonTitle, setButtonTitle] = useState('');
-  const [chipData, setChipData] = React.useState([
+  const [usernameInput, setUsernameInput] = useState('');
+  const [userKey, setUserKey] = useState(0);
+
+
+  const [chipData, setChipData] = useState([
     { key: 0, label: 'Angular' },
     { key: 1, label: 'jQuery' },
     { key: 2, label: 'Polymer' },
@@ -52,6 +57,7 @@ const Home = () => {
         res.map((obj) => ({ key: obj.project_id, name: obj.project_name }))
       )
       .then((res) => setProjects(res));
+    
   }, []);
 
   // const testing = JSON.parse(localStorage.getItem('user_id'));
@@ -73,6 +79,10 @@ const Home = () => {
 
   const onClickDeleteButton = (projectKey) => {
     setProjectKey(projectKey);
+  };
+
+  const onClickDeleteUserButton = (userKey) => {
+    setUserKey(userKey);
   };
 
   const onClickEditButton = (title) => {
@@ -97,6 +107,13 @@ const Home = () => {
     setUserInput(e.target.value);
   };
 
+  const grabUsernameInput = (e) => {
+    setUsernameInput(e.target.value);
+  };
+
+
+
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (buttonTitle === 'Add') {
@@ -117,11 +134,26 @@ const Home = () => {
         }
       });
       setProjects([...items]);
-    } else {
+    } 
+    else if (buttonTitle === 'Add User') {
+      const username = usernameInput
+      const project_id = 2
+      const permission_level = "Full"
+      const res = await addProjectUsers(username, project_id, permission_level);
+      const newProjectUser = { key: res.user_id, label: res.username};
+      const listOfProjectUsers = chipData;
+      listOfProjectUsers.push(newProjectUser);
+      setChipData([...listOfProjectUsers]);
+    }
+    else {
+      
       await deleteProject(projectKey);
+      console.log(projects)
       const filteredItems = projects.filter((item) => item.key !== projectKey);
+      console.log(filteredItems)
       setProjects([...filteredItems]);
     }
+
   };
 
   return (
@@ -224,7 +256,8 @@ const Home = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             setTitle('Collaborate With Other Users');
-                            setDescription('Please enter a username/email.');
+                            setDescription('Please enter a username.');
+                            onClickAddButton('Add User');
                             handleClickOpen();
                           }}
                         >
@@ -249,9 +282,14 @@ const Home = () => {
               onSubmit={onSubmit}
               grabUserInput={grabUserInput}
               userInput={userInput}
-              chipData={chipData}
               handleDelete={handleDelete}
-            ></ProjectPopup>
+              grabUsernameInput={grabUsernameInput}
+              usernameInput={usernameInput}
+            >
+
+            </ProjectPopup>
+
+
           </motion.div>
         </Grid>
       </Grid>
