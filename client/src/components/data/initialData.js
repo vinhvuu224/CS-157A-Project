@@ -1,7 +1,5 @@
 const initialData = {
-  tasks: {
-    
-  },
+  tasks: {},
   columns: {
     'column-1': {
       id: 'column-1',
@@ -21,6 +19,5 @@ const initialData = {
   },
   columnOrder: ['column-1', 'column-2', 'column-3'],
 };
+
 export default initialData;
-
-

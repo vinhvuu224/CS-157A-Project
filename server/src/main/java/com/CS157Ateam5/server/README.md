@@ -13,10 +13,13 @@ API Usage guide:
 - DELETE: (permission_id)
 
 /projects- For accessing `projects` entity
-- GET: (username, project_name) Returns all tasks and issues associated with the project
+- GET: (project_id) Returns all user_ids and usernames for a project
 - POST: (project_name, username) - Body. Creates "Full" permission entry in userpermissionproject and permissions
 - PATCH: (project_id, project_name, username) (e.g. 1, "Bug Tracker", "Bug Watcher").
 - DELETE: (project_id) Deletes all corresponding relationships 
+
+/getprojects
+- GET: (user_id) Returns all projects of a user
 
 /tasks- For accessing `tasks` entity
 - GET: (project_id OR task_id) Returns all tasks in project, OR details of single task respectively

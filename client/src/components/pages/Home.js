@@ -23,9 +23,6 @@ import { getProjectUsers } from '../../actions/projectUsers';
 import { addProjectUsers } from '../../actions/projectUsers';
 import { deleteProjectUsers } from '../../actions/projectUsers';
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

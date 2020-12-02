@@ -23,7 +23,6 @@ public class ProjectController {
     @GetMapping(value="/getProjects")
     public @ResponseBody Object justatest(int user_id) {
            List<ProjectInfo> projects = new ArrayList<>();
-           List<String> projectList = new ArrayList<>();
            String testQuery = "select projects.project_id, name from projects,haveuserpermissionproject where projects.project_id = haveuserpermissionproject.project_id and haveuserpermissionproject.user_id = "+user_id+";";
            List<Map<String, Object>> rows = jdbcTemplate.queryForList(testQuery);
            for (Map row : rows) {
@@ -33,7 +32,6 @@ public class ProjectController {
            return projects;
     }
 
-    
     @GetMapping(value="/projects")
     public @ResponseBody Object justatest(@RequestParam long project_id) {
         String query = "SELECT user_id, username FROM users JOIN haveuserpermissionproject USING (user_id) WHERE " +
@@ -56,7 +54,8 @@ public class ProjectController {
         }
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
-        new UserProjectPermissionController(jdbcTemplate).addNewEntry(project.getUsername(), project_id, "Full");
+        new UserProjectPermissionController(jdbcTemplate).addNewEntry(new UserProjectPost(project.getUsername(),
+                project_id, "Full"));
         project.setProject_id(project_id);
         return project;
     }

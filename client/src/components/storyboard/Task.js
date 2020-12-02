@@ -15,7 +15,7 @@ const Container = styled.div`
 `;
 const Task = (props) => {
   return (
-    <Draggable draggableId={props.task.id} index={props.index}>
+    <Draggable draggableId={props.task.id.toString()} index={props.index}>
       {(provided, snapshot) => (
         <Container
           {...provided.draggableProps}
@@ -34,6 +34,7 @@ const Task = (props) => {
             color='primary'
             onClick={(e) => {
               e.preventDefault();
+              props.setTask(props.task);
               props.setTitle('Editing Task');
               props.setDescription(
                 'Please rename your task and description here.'
@@ -44,11 +45,12 @@ const Task = (props) => {
             <CreateIcon />
           </IconButton>
           <IconButton
-            aria-label='Add'
+            aria-label='Delete'
             color='secondary'
             onClick={(e) => {
               e.preventDefault();
               props.setTitle('Deleting Task');
+              props.setTask(props.task);
               props.setDescription(
                 'Are you sure you want to delete your task?'
               );
