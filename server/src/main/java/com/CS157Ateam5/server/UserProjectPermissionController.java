@@ -2,7 +2,9 @@ package com.CS157Ateam5.server;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +30,16 @@ public class UserProjectPermissionController {
      */
     @GetMapping(value = "/userprojects")
     public @ResponseBody
-    String getEntry(@RequestParam long user_id, @RequestParam long project_id) {
-
-        String projectUserQuery = "SELECT permission_level FROM haveuserpermissionproject JOIN permissions USING " +
-                "(permission_id)" + " WHERE project_id = " + project_id + " AND user_id = " + user_id + ";";
-        String permission = jdbcTemplate.queryForObject(projectUserQuery, String.class);
-        return permission;
+    List<UserProjectGet> getEntry(@RequestParam long project_id) {
+        String projectUserQuery = "SELECT user_id, username, permission_level FROM haveuserpermissionproject JOIN " +
+                "permissions USING (permission_id) JOIN users USING (user_id) WHERE project_id = " + project_id + ";";
+        List<UserProjectGet> list = new ArrayList<>();
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(projectUserQuery);
+        for(Map row: rows) {
+            list.add(new UserProjectGet((int) row.get("user_id"), (String) row.get("username"),
+                    (String) row.get("permission_level")));
+        }
+        return list;
     }
 
     @PostMapping(value = "/userprojects")

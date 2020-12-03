@@ -8,11 +8,29 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { Chip } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+
 
 
 const ProjectPopup = (props) => {
-  const {usernameInput, grabUsernameInput, title, description, open, handleClose, onSubmit, grabUserInput,userInput} = props;
+  const {permissionLevel,setPermissionLevel,usernameInput, grabUsernameInput, title, description, open, handleClose, onSubmit, grabUserInput,userInput} = props;
+  
+  const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+  }));
 
+  const classes = useStyles();
+
+  const handleChange = (event) => {
+    setPermissionLevel(event.target.value);
+    };
   return (
     
     <Dialog
@@ -39,6 +57,20 @@ const ProjectPopup = (props) => {
             fullWidth
             onChange={(e) => grabUsernameInput(e)}
           />
+
+              <FormControl className={classes.formControl}>
+              <InputLabel id='demo-simple-select-label'>Priority Level</InputLabel>
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={permissionLevel}
+                onChange={handleChange}
+              >
+                <MenuItem value={'Full'}>Full</MenuItem>
+                <MenuItem value={'Partial'}>Partial</MenuItem>
+                <MenuItem value={'Read-Only'}>Read-Only</MenuItem>
+              </Select>
+            </FormControl>
         
           </div>   
       ) : (

@@ -19,7 +19,6 @@ import { editProject } from '../../actions/projects';
 import { deleteProject } from '../../actions/projects';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import { Chip } from '@material-ui/core';
-import { getProjectUsers } from '../../actions/projectUsers';
 import { addProjectUsers } from '../../actions/projectUsers';
 import { deleteProjectUsers } from '../../actions/projectUsers';
 
@@ -40,6 +39,8 @@ const Home = () => {
   const [buttonTitle, setButtonTitle] = useState('');
   const [usernameInput, setUsernameInput] = useState('');
   const [userKey, setUserKey] = useState(0);
+  const [permissionLevel, setPermissionLevel] = useState("");
+
 
 
   const [chipData, setChipData] = useState([
@@ -66,12 +67,7 @@ const Home = () => {
   // console.log("This is the userEmail: ", testing2)
   // const testing3 = JSON.stringify(localStorage.getItem('userUsername'));
   // console.log("This is the userUsername: ", testing3)
-
-  const handleDelete = (chipToDelete) => () => {
-    setChipData((chips) =>
-      chips.filter((chip) => chip.key !== chipToDelete.key)
-    );
-  };
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -100,7 +96,7 @@ const Home = () => {
   const classes = useStyles();
   let history = useHistory();
   function nextPage(e) {
-    history.push({ pathname: '/Storyboard', projectName: e });
+    history.push({ pathname: '/Storyboard', projectName : e });
   }
 
   const grabUserInput = (e) => {
@@ -125,7 +121,6 @@ const Home = () => {
       setProjects([...listOfProjects]);
     } else if (buttonTitle === 'Edit') {
       const username = JSON.stringify(localStorage.getItem('userUsername'));
-      console.log(projectKey, userInput, username);
       await editProject(projectKey, userInput, username);
       const items = projects;
       items.map((item) => {
@@ -137,20 +132,13 @@ const Home = () => {
     } 
     else if (buttonTitle === 'Add User') {
       const username = usernameInput
-      const project_id = 2
-      const permission_level = "Full"
-      const res = await addProjectUsers(username, project_id, permission_level);
-      const newProjectUser = { key: res.user_id, label: res.username};
-      const listOfProjectUsers = chipData;
-      listOfProjectUsers.push(newProjectUser);
-      setChipData([...listOfProjectUsers]);
+      await addProjectUsers(username, projectKey, permissionLevel);
+      
     }
     else {
       
       await deleteProject(projectKey);
-      console.log(projects)
       const filteredItems = projects.filter((item) => item.key !== projectKey);
-      console.log(filteredItems)
       setProjects([...filteredItems]);
     }
 
@@ -256,7 +244,7 @@ const Home = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             setTitle('Collaborate With Other Users');
-                            setDescription('Please enter a username.');
+                            setDescription('Please enter a username and select a priority level.');
                             onClickAddButton('Add User');
                             handleClickOpen();
                           }}
@@ -282,9 +270,10 @@ const Home = () => {
               onSubmit={onSubmit}
               grabUserInput={grabUserInput}
               userInput={userInput}
-              handleDelete={handleDelete}
               grabUsernameInput={grabUsernameInput}
               usernameInput={usernameInput}
+              setPermissionLevel={setPermissionLevel}
+              permissionLevel={permissionLevel}
             >
 
             </ProjectPopup>

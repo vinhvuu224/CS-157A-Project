@@ -9,6 +9,17 @@ import styled from 'styled-components';
 import { getTasks } from '../../actions/task';
 import { editTask } from '../../actions/task';
 import Button from '@material-ui/core/Button';
+import { getProjectUsers } from '../../actions/projectUsers';
+import { Chip } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import { deleteProjectUsers } from '../../actions/projectUsers';
+import TagFacesIcon from '@material-ui/icons/TagFaces';
+
+
+
+
+
 
 const Container = styled.div`
   display: flex;
@@ -18,6 +29,14 @@ const Storyboard = () => {
   const location = useLocation();
   const [state, setState] = useState(initialData);
   const history = useHistory();
+  const [userKey, setUserKey] = useState(0);
+  const[userPermissionLevel, setUserPermissionlevel] = useState("Full")
+  const[userUsername, setUserUsername] = "vinhvu123"
+  const [chipData, setChipData] = useState([   
+  ]);
+
+  const localUsername = localStorage.getItem('userUsername'); 
+
   useEffect(() => {
     getTasks(location.projectName.projectkey)
       .then((tasks) => {
@@ -49,7 +68,48 @@ const Storyboard = () => {
         });
         setState(x);
       });
+
+      getProjectUsers(location.projectName.projectkey)
+      .then((res) =>
+        res.map((obj) => ({ key: obj.user_id, label: obj.username, permission_level: obj.permission_level }))
+      )
+      .then((res) => setChipData(res));
+      
+
   }, []);
+
+
+  
+
+  const handleDelete = (chipToDelete) => async () => {
+    setUserKey(userKey);
+    await deleteProjectUsers(location.projectName.projectkey,chipToDelete.key)
+    setChipData((chips) =>
+      chips.filter((chip) => chip.key !== chipToDelete.key)
+    );
+  };
+
+  
+  const onClickDeleteUserButton = (userKey) => {
+    setUserKey(userKey);
+  };
+
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: 0,
+    },
+    chip: {
+      margin: theme.spacing(0.5),
+    },
+  }));
+
+  const classes = useStyles();
 
   //Persiting changes after dragging
   const onDragEnd = async (result) => {
@@ -64,6 +124,8 @@ const Storyboard = () => {
       return;
     }
 
+    
+      
     const start = state.columns[source.droppableId];
     const finish = state.columns[destination.droppableId];
     if (start === finish) {
@@ -176,6 +238,32 @@ const Storyboard = () => {
             })}
         </Container>
       </DragDropContext>
+      <div>
+            <header>User</header>
+      <Paper component="ul" className={classes.root}>
+      {console.log("hey look here: ",chipData)}
+      {chipData.map((data) => {
+        
+         return(
+
+      localUsername === data.label ? undefined : 
+      <li key={data.key}>
+        
+        <Chip
+          label={data.label}
+          onDelete={(userPermissionLevel !== "Full") ? undefined : handleDelete(data)}
+          className={classes.chip}
+        />
+      </li>
+          
+          )
+      })}
+      {/* <Chip 
+      label="React"
+      onDelete={() => {console.log("hello")}}
+      /> */}
+    </Paper>
+      </div>
     </motion.div>
   );
 };
