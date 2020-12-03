@@ -4,6 +4,14 @@ public class Projects {
     private long project_id;
     private String project_name;
     private String username;
+    private String permission_level;
+
+    public Projects(long project_id, String project_name, String username, String permission_level) {
+        this.project_id = project_id;
+        this.project_name = project_name;
+        this.username = username;
+        this.permission_level = permission_level;
+    }
 
     @Override
     public String toString() {
@@ -14,10 +22,12 @@ public class Projects {
                 '}';
     }
 
-    public Projects(long project_id, String project_name, String username) {
-        this.project_id = project_id;
-        this.project_name = project_name;
-        this.username = username;
+    public String getPermission_level() {
+        return permission_level;
+    }
+
+    public void setPermission_level(String permission_level) {
+        this.permission_level = permission_level;
     }
 
     public String getUsername() {

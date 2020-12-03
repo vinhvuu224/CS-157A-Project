@@ -57,10 +57,11 @@ public class ProjectController {
         jdbcTemplate.update("INSERT INTO Projects(name) values('" + project.getProject_name()+"')");
         long project_id = jdbcTemplate.queryForObject("SELECT MAX(project_id) from projects;", long.class);
         new UserProjectPermissionController(jdbcTemplate).addNewEntry(new UserProjectPost(project.getUsername(),
-                project_id, "Full"));
+                project_id, project.getPermission_level()));
         project.setProject_id(project_id);
         return project;
     }
+
     @PatchMapping(value="/projects")
     public @ResponseBody String updateEntry(@RequestParam long project_id, @RequestParam String project_name,
                                             @RequestParam String username) {
