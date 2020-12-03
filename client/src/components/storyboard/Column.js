@@ -39,20 +39,24 @@ const Column = (props) => {
     <Container>
       <Title>
         {props.column.title}
-        <IconButton
-          aria-label='Add'
-          color='primary'
-          onClick={(e) => {
-            e.preventDefault();
-            setTitle('Adding Task');
-            setDescription(
-              'Please name your task and give it a description here.'
-            );
-            handleClickOpen();
-          }}
-        >
-          <AddIcon />
-        </IconButton>
+        {props.permission === 'Read-Only' ? (
+          <></>
+        ) : (
+          <IconButton
+            aria-label='Add'
+            color='primary'
+            onClick={(e) => {
+              e.preventDefault();
+              setTitle('Adding Task');
+              setDescription(
+                'Please name your task and give it a description here.'
+              );
+              handleClickOpen();
+            }}
+          >
+            <AddIcon />
+          </IconButton>
+        )}
       </Title>
       <Droppable droppableId={props.column.id}>
         {(provided, snapshot) => (
@@ -66,6 +70,7 @@ const Column = (props) => {
                 key={task.id}
                 task={task}
                 index={index}
+                permission={props.permission}
                 setTitle={setTitle}
                 setDescription={setDescription}
                 handleClickOpen={handleClickOpen}

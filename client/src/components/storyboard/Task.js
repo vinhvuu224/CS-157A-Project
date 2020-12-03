@@ -29,36 +29,43 @@ const Task = (props) => {
           <Typography variant='body2' color='textSecondary' component='p'>
             {props.task.description}
           </Typography>
-          <IconButton
-            aria-label='Edit'
-            color='primary'
-            onClick={(e) => {
-              e.preventDefault();
-              props.setTask(props.task);
-              props.setTitle('Editing Task');
-              props.setDescription(
-                'Please rename your task and description here.'
-              );
-              props.handleClickOpen();
-            }}
-          >
-            <CreateIcon />
-          </IconButton>
-          <IconButton
-            aria-label='Delete'
-            color='secondary'
-            onClick={(e) => {
-              e.preventDefault();
-              props.setTitle('Deleting Task');
-              props.setTask(props.task);
-              props.setDescription(
-                'Are you sure you want to delete your task?'
-              );
-              props.handleClickOpen();
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
+          {props.permission === 'Read-Only' ? (
+            <></>
+          ) : (
+            <div>
+              {' '}
+              <IconButton
+                aria-label='Edit'
+                color='primary'
+                onClick={(e) => {
+                  e.preventDefault();
+                  props.setTask(props.task);
+                  props.setTitle('Editing Task');
+                  props.setDescription(
+                    'Please rename your task and description here.'
+                  );
+                  props.handleClickOpen();
+                }}
+              >
+                <CreateIcon />
+              </IconButton>
+              <IconButton
+                aria-label='Delete'
+                color='secondary'
+                onClick={(e) => {
+                  e.preventDefault();
+                  props.setTitle('Deleting Task');
+                  props.setTask(props.task);
+                  props.setDescription(
+                    'Are you sure you want to delete your task?'
+                  );
+                  props.handleClickOpen();
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>{' '}
+            </div>
+          )}
         </Container>
       )}
     </Draggable>

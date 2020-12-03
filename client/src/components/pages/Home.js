@@ -39,9 +39,7 @@ const Home = () => {
   const [buttonTitle, setButtonTitle] = useState('');
   const [usernameInput, setUsernameInput] = useState('');
   const [userKey, setUserKey] = useState(0);
-  const [permissionLevel, setPermissionLevel] = useState("");
-
-
+  const [permissionLevel, setPermissionLevel] = useState('');
 
   const [chipData, setChipData] = useState([
     { key: 0, label: 'Angular' },
@@ -55,10 +53,13 @@ const Home = () => {
     const user_id = JSON.parse(localStorage.getItem('user_id'));
     getProjects(user_id)
       .then((res) =>
-        res.map((obj) => ({ key: obj.project_id, name: obj.project_name }))
+        res.map((obj) => ({
+          key: obj.project_id,
+          name: obj.project_name,
+          permission: obj.permission_level,
+        }))
       )
       .then((res) => setProjects(res));
-    
   }, []);
 
   // const testing = JSON.parse(localStorage.getItem('user_id'));
@@ -67,7 +68,6 @@ const Home = () => {
   // console.log("This is the userEmail: ", testing2)
   // const testing3 = JSON.stringify(localStorage.getItem('userUsername'));
   // console.log("This is the userUsername: ", testing3)
-  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -96,7 +96,7 @@ const Home = () => {
   const classes = useStyles();
   let history = useHistory();
   function nextPage(e) {
-    history.push({ pathname: '/Storyboard', projectName : e });
+    history.push({ pathname: '/Storyboard', projectName: e });
   }
 
   const grabUserInput = (e) => {
@@ -107,15 +107,16 @@ const Home = () => {
     setUsernameInput(e.target.value);
   };
 
-
-
-
   const onSubmit = async (e) => {
     e.preventDefault();
     if (buttonTitle === 'Add') {
       const username = localStorage.getItem('userUsername');
       const res = await addProject(userInput, username);
-      const newProject = { key: res.project_id, name: res.project_name };
+      const newProject = {
+        key: res.project_id,
+        name: res.project_name,
+        permission: 'Full',
+      };
       const listOfProjects = projects;
       listOfProjects.push(newProject);
       setProjects([...listOfProjects]);
@@ -129,19 +130,14 @@ const Home = () => {
         }
       });
       setProjects([...items]);
-    } 
-    else if (buttonTitle === 'Add User') {
-      const username = usernameInput
+    } else if (buttonTitle === 'Add User') {
+      const username = usernameInput;
       await addProjectUsers(username, projectKey, permissionLevel);
-      
-    }
-    else {
-      
+    } else {
       await deleteProject(projectKey);
       const filteredItems = projects.filter((item) => item.key !== projectKey);
       setProjects([...filteredItems]);
     }
-
   };
 
   return (
@@ -194,67 +190,78 @@ const Home = () => {
                             nextPage({
                               projectname: project.name,
                               projectkey: project.key,
+                              permission: project.permission,
                             });
                           }}
                         >
                           <ListItemText
                             primary={project.name}
-                            style={{ maxWidth: 200 }}
+                            style={{ maxWidth: 290 }}
                           />
                         </ListItem>
-                        <IconButton
-                          aria-label='Edit'
-                          color='primary'
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setTitle('Editing Project');
-                            setDescription('Please rename your project here.');
-                            handleClickOpen();
-                          }}
-                        >
-                          <CreateIcon
-                            onClick={() => {
-                              onClickDeleteButton(project.key);
-                              onClickEditButton('Edit');
-                            }}
-                          />
-                        </IconButton>
-                        <IconButton
-                          aria-label='Add'
-                          color='secondary'
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setTitle('Deleting Project');
-                            setDescription(
-                              'Are you sure you want to delete your project?'
-                            );
-                            handleClickOpen();
-                          }}
-                        >
-                          <DeleteIcon
-                            onClick={() => {
-                              onClickDeleteButton(project.key);
-                              onClickAddButton('Delete');
-                            }}
-                          />
-                        </IconButton>
-                        <IconButton
-                          aria-label='Add'
-                          color='primary'
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setTitle('Collaborate With Other Users');
-                            setDescription('Please enter a username and select a priority level.');
-                            onClickAddButton('Add User');
-                            handleClickOpen();
-                          }}
-                        >
-                          <GroupAddIcon
-                            onClick={() => {
-                              onClickDeleteButton(project.key);
-                            }}
-                          />
-                        </IconButton>
+                        {project.permission === 'Full' ? (
+                          <div>
+                            <IconButton
+                              aria-label='Edit'
+                              color='primary'
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setTitle('Editing Project');
+                                setDescription(
+                                  'Please rename your project here.'
+                                );
+                                handleClickOpen();
+                              }}
+                            >
+                              <CreateIcon
+                                onClick={() => {
+                                  onClickDeleteButton(project.key);
+                                  onClickEditButton('Edit');
+                                }}
+                              />
+                            </IconButton>
+                            <IconButton
+                              aria-label='Add'
+                              color='secondary'
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setTitle('Deleting Project');
+                                setDescription(
+                                  'Are you sure you want to delete your project?'
+                                );
+                                handleClickOpen();
+                              }}
+                            >
+                              <DeleteIcon
+                                onClick={() => {
+                                  onClickDeleteButton(project.key);
+                                  onClickAddButton('Delete');
+                                }}
+                              />
+                            </IconButton>
+                            <IconButton
+                              aria-label='Add'
+                              color='primary'
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setTitle('Collaborate With Other Users');
+                                setDescription(
+                                  'Please enter a username and select a priority level.'
+                                );
+                                onClickAddButton('Add User');
+                                handleClickOpen();
+                              }}
+                            >
+                              <GroupAddIcon
+                                onClick={() => {
+                                  onClickDeleteButton(project.key);
+                                }}
+                              />
+                            </IconButton>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
                       </ListItem>
                       <Divider />
                     </div>
@@ -274,11 +281,7 @@ const Home = () => {
               usernameInput={usernameInput}
               setPermissionLevel={setPermissionLevel}
               permissionLevel={permissionLevel}
-            >
-
-            </ProjectPopup>
-
-
+            ></ProjectPopup>
           </motion.div>
         </Grid>
       </Grid>
