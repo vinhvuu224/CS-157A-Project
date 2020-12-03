@@ -80,8 +80,8 @@ export const login = async (emailUsername, password, history, setUser) => {
     if (res.data.userEmailError === 'Please enter a valid username/email.') {
       data.emailUsernameError = res.data.userEmailError;
       return data;
-    } else if (res.data.passError === 'Incorrect password.') {
-      data.passwordError = res.data.passError;
+    } else if (res.data.passwordError === 'Incorrect password.') {
+      data.passwordError = res.data.passwordError;
       return data;
     } else {
       setAuthHeader(
