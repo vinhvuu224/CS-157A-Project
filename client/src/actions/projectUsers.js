@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getProjectUsers = async (project_id) => {
     try {
-      const res = await axios.get('/projects', {
+      const res = await axios.get('/userprojects', {
         params: {
           project_id: project_id
         },
