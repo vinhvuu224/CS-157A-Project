@@ -23,10 +23,12 @@ public class ProjectController {
     @GetMapping(value="/getProjects")
     public @ResponseBody Object justatest(int user_id) {
            List<ProjectInfo> projects = new ArrayList<>();
-           String testQuery = "select projects.project_id, name from projects,haveuserpermissionproject where projects.project_id = haveuserpermissionproject.project_id and haveuserpermissionproject.user_id = "+user_id+";";
+           String testQuery = "select projects.project_id, name, permission_level from haveuserpermissionproject " +
+                   "JOIN projects USING (project_id) JOIN permissions USING (permission_id) where user_id="+user_id+";";
            List<Map<String, Object>> rows = jdbcTemplate.queryForList(testQuery);
            for (Map row : rows) {
-               ProjectInfo project = new ProjectInfo((int) row.get("project_id"), (String) row.get("name"));
+               ProjectInfo project = new ProjectInfo((int) row.get("project_id"), (String) row.get("name"),
+                       (String) row.get("permission_level"));
                projects.add(project);
            }
            return projects;
