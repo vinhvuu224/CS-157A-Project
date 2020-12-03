@@ -39,9 +39,7 @@ const Home = () => {
   const [buttonTitle, setButtonTitle] = useState('');
   const [usernameInput, setUsernameInput] = useState('');
   const [userKey, setUserKey] = useState(0);
-  const [permissionLevel, setPermissionLevel] = useState("");
-
-
+  const [permissionLevel, setPermissionLevel] = useState('');
 
   const [chipData, setChipData] = useState([
     { key: 0, label: 'Angular' },
@@ -55,10 +53,13 @@ const Home = () => {
     const user_id = JSON.parse(localStorage.getItem('user_id'));
     getProjects(user_id)
       .then((res) =>
-        res.map((obj) => ({ key: obj.project_id, name: obj.project_name }))
+        res.map((obj) => ({
+          key: obj.project_id,
+          name: obj.project_name,
+          permission: obj.permission_level,
+        }))
       )
       .then((res) => setProjects(res));
-    
   }, []);
 
   // const testing = JSON.parse(localStorage.getItem('user_id'));
@@ -67,7 +68,6 @@ const Home = () => {
   // console.log("This is the userEmail: ", testing2)
   // const testing3 = JSON.stringify(localStorage.getItem('userUsername'));
   // console.log("This is the userUsername: ", testing3)
-  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -96,7 +96,7 @@ const Home = () => {
   const classes = useStyles();
   let history = useHistory();
   function nextPage(e) {
-    history.push({ pathname: '/Storyboard', projectName : e });
+    history.push({ pathname: '/Storyboard', projectName: e });
   }
 
   const grabUserInput = (e) => {
@@ -106,9 +106,6 @@ const Home = () => {
   const grabUsernameInput = (e) => {
     setUsernameInput(e.target.value);
   };
-
-
-
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -129,19 +126,14 @@ const Home = () => {
         }
       });
       setProjects([...items]);
-    } 
-    else if (buttonTitle === 'Add User') {
-      const username = usernameInput
+    } else if (buttonTitle === 'Add User') {
+      const username = usernameInput;
       await addProjectUsers(username, projectKey, permissionLevel);
-      
-    }
-    else {
-      
+    } else {
       await deleteProject(projectKey);
       const filteredItems = projects.filter((item) => item.key !== projectKey);
       setProjects([...filteredItems]);
     }
-
   };
 
   return (
@@ -183,7 +175,7 @@ const Home = () => {
               <Divider />
               <List style={{ overflowY: 'auto', height: '500px' }}>
                 {projects.map((project) => {
-                  return (
+                  return project.permission === 'Full' ? (
                     <div>
                       <ListItem>
                         <ListItem
@@ -244,7 +236,9 @@ const Home = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             setTitle('Collaborate With Other Users');
-                            setDescription('Please enter a username and select a priority level.');
+                            setDescription(
+                              'Please enter a username and select a priority level.'
+                            );
                             onClickAddButton('Add User');
                             handleClickOpen();
                           }}
@@ -258,6 +252,8 @@ const Home = () => {
                       </ListItem>
                       <Divider />
                     </div>
+                  ) : (
+                    <></>
                   );
                 })}
               </List>
@@ -274,11 +270,7 @@ const Home = () => {
               usernameInput={usernameInput}
               setPermissionLevel={setPermissionLevel}
               permissionLevel={permissionLevel}
-            >
-
-            </ProjectPopup>
-
-
+            ></ProjectPopup>
           </motion.div>
         </Grid>
       </Grid>
